@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
             hintColor: Colors.black.withOpacity(0.7),
             borderRadius: 10,
             showPrefixIcon: true,
-            prefixIcon: Icon(Icons.person),
+            prefixIcon: Icon(Icons.account_box),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
               hintColor: Colors.black.withOpacity(0.7),
               borderRadius: 10,
               showPrefixIcon: true,
-              prefixIcon: Icon(Icons.person),
+              prefixIcon: Icon(Icons.password),
               obscureText: hidePassword,
               suffixIcon: IconButton(
                 onPressed: () {
