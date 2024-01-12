@@ -1,6 +1,5 @@
 const {
     create,
-  
     getUsers,
     updateUser,
     getUserByUserEmail,
