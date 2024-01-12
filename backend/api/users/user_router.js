@@ -31,9 +31,6 @@ const router = require("express").Router();
 
 const { checkToken } = require("../../auth/token_validation");
 
-router.post("/youtube", getYoutubeSearch);
-router.get("/youtube", getALLYoutube);
-router.post("/news/search", getNewsSearch);
 
 router.post("/", createUser);
 router.get("/", checkToken, getUsers);
