@@ -1,4 +1,9 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
@@ -29,6 +34,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Network network = Network();
 
+  // 이미지
+  XFile? _image; // 이미지를 담을 변수
+  final ImagePicker _picker = ImagePicker(); // 이미지를 가져올 피커
+
+  Future getImage(ImageSource imageSource) async {
+    final XFile? pickedFile = await _picker.pickImage(source: imageSource);
+    if (pickedFile == null) return;
+    setState(() {
+      _image = XFile(pickedFile.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -52,40 +69,10 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Container(
-            //   width: MediaQuery.of(context).size.width,
-            //   height: MediaQuery.of(context).size.height / 4.5,
-            //   decoration: const BoxDecoration(
-            //       gradient: LinearGradient(
-            //         begin: Alignment.topCenter,
-            //         end: Alignment.bottomCenter,
-            //         colors: [
-            //           Colors.black54,
-            //           Colors.black54,
-            //         ],
-            //       ),
-            //       borderRadius: BorderRadius.only(
-            //         bottomLeft: Radius.circular(100),
-            //         bottomRight: Radius.circular(100),
-            //       )),
-            //   child: Column(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       Align(
-            //         alignment: Alignment.center,
-            //         child: Image.asset(
-            //           "assets/images/AppLogo.png",
-            //           width: 180,
-            //           fit: BoxFit.contain,
-            //         ),
-            //       )
-            //     ],
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(
                 left: 20,
-                bottom: 30,
+                bottom: 10,
                 top: 50,
               ),
               child: Text(
@@ -97,6 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
+            buildProfileImage(),
             FormHelper.inputFieldWidget(
               context,
               "username",
@@ -347,6 +335,83 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
           ]),
+    );
+  }
+
+  Widget buildProfileImage() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0),
+      child: Center(
+        child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              CircleAvatar(
+                  radius: 100,
+                  backgroundColor: Colors.black54,
+                  child: CircleAvatar(
+                      radius: 98,
+                      backgroundColor: Colors.white,
+                      backgroundImage: _image != null
+                          ? FileImage(File(_image!.path))
+                              as ImageProvider<Object>?
+                          : AssetImage('assets/images/default_profile.png'))),
+              SizedBox(height: 10),
+              Positioned(bottom: -10, child: buildImageButton()),
+            ]),
+      ),
+    );
+  }
+
+  Widget buildImageButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CircleAvatar(
+          radius: 16,
+          backgroundColor: Colors.black,
+          child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.white,
+              child: Material(
+                shape: CircleBorder(),
+                clipBehavior: Clip.hardEdge,
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    getImage(
+                        ImageSource.camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
+                  },
+                  child: Center(
+                    child:
+                        Icon(Icons.camera_alt, size: 22, color: Colors.black),
+                  ),
+                ),
+              )),
+        ),
+        SizedBox(width: 6),
+        CircleAvatar(
+          radius: 16,
+          backgroundColor: Colors.black,
+          child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.white,
+              child: Material(
+                shape: CircleBorder(),
+                clipBehavior: Clip.hardEdge,
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    getImage(
+                        ImageSource.gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
+                  },
+                  child: Center(
+                    child: Icon(Icons.photo, size: 22, color: Colors.black),
+                  ),
+                ),
+              )),
+        ),
+      ],
     );
   }
 
