@@ -14,17 +14,12 @@ const upload = multer({ storage: storage });
 
 const {
   createUser,
-  // getUserByUserID,
   getUserByUserEmail,
   getUsers,
   updateUser,
   login,
   updateUserProfile,
   updateUserBackground,
-  getNews,
-  getNewsSearch,
-  getYoutubeSearch,
-  getALLYoutube,
 } = require("./user_controller");
 
 const router = require("express").Router();
@@ -34,7 +29,6 @@ const { checkToken } = require("../../auth/token_validation");
 
 router.post("/", createUser);
 router.get("/", checkToken, getUsers);
-// router.get("/:id", checkToken, getUserByUserID);
 router.get("/:email", checkToken, getUserByUserEmail);
 router.put("/", checkToken, updateUser);
 router.post("/login", login);
