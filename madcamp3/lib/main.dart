@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       home: LoginPage(),
       routes: {
+        '/visionapi': (context) => VisionApiExample(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
       },

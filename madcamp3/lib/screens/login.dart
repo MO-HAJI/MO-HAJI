@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'util/login.dart';
 
@@ -22,21 +23,26 @@ class _LoginPageState extends State<LoginPage> {
   String? password;
   Authentication authentication = Authentication();
 
+  // Google Sign-In
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  bool _isGoogleSignInInProgress = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      backgroundColor: Colors.white,
-      body: ProgressHUD(
-        child: Form(
-          key: globalFormKey,
-          child: _loginUI(context),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: ProgressHUD(
+          child: Form(
+            key: globalFormKey,
+            child: _loginUI(context),
+          ),
+          inAsyncCall: isAPIcallProcess || _isGoogleSignInInProgress,
+          opacity: 0.3,
+          key: UniqueKey(),
         ),
-        inAsyncCall: isAPIcallProcess,
-        opacity: 0.3,
-        key: UniqueKey(),
       ),
-    ));
+    );
   }
 
   Widget _loginUI(BuildContext context) {
@@ -197,6 +203,26 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: 20,
           ),
+          // Google 로그인 버튼 추가
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: _googleSignInButton(),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Center(
+            child: Text(
+              "OR",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
           Align(
             alignment: Alignment.center,
             child: Padding(
@@ -228,6 +254,65 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  // Google 로그인 버튼 위젯
+  Widget _googleSignInButton() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 80.0),
+    child: ElevatedButton(
+    onPressed: () async {
+    await _handleGoogleSignIn();
+    },
+      style: ElevatedButton.styleFrom(
+        primary: Colors.white,
+        onPrimary: Colors.black,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/google_logo.png', // 구글 로고 이미지 경로
+                height: 20,
+              ),
+              SizedBox(width: 10),
+              Text('Google로 로그인'),
+            ],
+          ),
+        ),
+        ),
+      ),
+    );
+  }
+
+  // Google 로그인 처리
+  Future<void> _handleGoogleSignIn() async {
+    try {
+      setState(() {
+        _isGoogleSignInInProgress = true;
+      });
+      GoogleSignInAccount? googleSignInAccount =
+      await _googleSignIn.signIn();
+      if (googleSignInAccount != null) {
+        // Google 로그인 성공
+        String googleEmail = googleSignInAccount.email;
+        // 여기서 구글 로그인 성공 후 추가적인 로직을 수행할 수 있습니다.
+        // 예를 들어, 해당 이메일로 회원 가입 또는 로그인 처리 등을 수행할 수 있습니다.
+        print('Google Sign-In success. Email: $googleEmail');
+      }
+    } catch (error) {
+      print('Google Sign-In error: $error');
+    } finally {
+      setState(() {
+        _isGoogleSignInInProgress = false;
+      });
+    }
   }
 
   bool validateAndSave() {
