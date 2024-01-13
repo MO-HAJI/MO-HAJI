@@ -18,8 +18,6 @@ const {
   getUsers,
   updateUser,
   login,
-  updateUserProfile,
-  updateUserBackground,
 } = require("./user_controller");
 
 const router = require("express").Router();
@@ -32,17 +30,6 @@ router.get("/", checkToken, getUsers);
 router.get("/:email", checkToken, getUserByUserEmail);
 router.put("/", checkToken, updateUser);
 router.post("/login", login);
-router.patch(
-  "/users/backgroundimage",
-  checkToken,
-  upload.single("image"),
-  updateUserBackground
-);
-router.patch(
-  "/users/profileimage",
-  checkToken,
-  upload.single("image"),
-  updateUserProfile
-);
+
 
 module.exports = router;

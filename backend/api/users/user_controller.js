@@ -3,8 +3,6 @@ const {
     getUsers,
     updateUser,
     getUserByUserEmail,
-    setBackUrl,
-    setProfileUrl,
   } = require("./user_service.js");
   
   const { genSaltSync, hashSync, compareSync } = require("bcrypt");
@@ -111,44 +109,6 @@ const {
             message: "Invalid Password",
           });
         }
-      });
-    },
-    updateUserBackground: async (req, res) => {
-      console.log("controller");
-      const email = req.body.email;
-      const url = req.file.fieldname + "-" + Date.now() + ".jpeg";
-      const n = [email, url];
-      // console.log(n[0]);
-      // console.log(n[1]);
-  
-      setBackUrl(n, (err, results) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        return res.json({
-          success: 1,
-          message: "updated successfully",
-        });
-      });
-    },
-    updateUserProfile: async (req, res) => {
-      console.log("controller");
-      const email = req.body.email;
-      const url = req.file.fieldname + "-" + Date.now() + ".jpeg";
-      const n = [email, url];
-      // console.log(n[0]);
-      // console.log(n[1]);
-  
-      setProfileUrl(n, (err, results) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        return res.json({
-          success: 1,
-          message: "updated successfully",
-        });
       });
     },
   };
