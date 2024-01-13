@@ -27,8 +27,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: VisionApiExample(),
+      home: LoginPage(),
       routes: {
+        '/visionapi': (context) => VisionApiExample(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
       },
