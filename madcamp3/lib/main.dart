@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: VisionApiExample(),
+      home: LoginPage(),
       routes: {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
@@ -46,26 +46,23 @@ class _VisionApiExampleState extends State<VisionApiExample> {
   String _extractedText = '';
   List<String?> _labels = [];
 
-
   Future<void> _selectImage() async {
     final image_picker.ImagePicker picker = image_picker.ImagePicker();
-    final image_picker.XFile? pickedFile = await picker.pickImage(
-        source: image_picker.ImageSource.gallery);
+    final image_picker.XFile? pickedFile =
+        await picker.pickImage(source: image_picker.ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
         _selectedImage = File(pickedFile.path);
         _extractedText =
-        ''; // Reset extracted text when a new image is selected
+            ''; // Reset extracted text when a new image is selected
       });
       _extractTextAndLabelsFromImage();
     }
   }
 
-
   Future<void> _extractTextAndLabelsFromImage() async {
     if (_selectedImage == null) return;
-
 
     print('Selected Image Path: ${_selectedImage!.path}');
 
@@ -116,8 +113,8 @@ class _VisionApiExampleState extends State<VisionApiExample> {
 
         // Process label annotations
         if (labelAnnotations != null && labelAnnotations.isNotEmpty) {
-          final labels = labelAnnotations.map((label) => label.description)
-              .toList();
+          final labels =
+              labelAnnotations.map((label) => label.description).toList();
           setState(() {
             _labels = labels;
           });
@@ -135,21 +132,17 @@ class _VisionApiExampleState extends State<VisionApiExample> {
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     final extractedTextImage = _selectedImage != null
         ? flutter.Image.file(
-      _selectedImage!,
-      height: 200,
-    )
+            _selectedImage!,
+            height: 200,
+          )
         : Icon(
-      Icons.image,
-      size: 100,
-    );
+            Icons.image,
+            size: 100,
+          );
 
     return Scaffold(
       appBar: AppBar(
