@@ -8,6 +8,7 @@ import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../service/network.dart';
+import '../service/api_image.dart';
 
 enum genderType { male, female }
 
@@ -33,6 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String? password;
 
   Network network = Network();
+  APIImage apiImage = APIImage();
 
   // 이미지
   XFile? _image; // 이미지를 담을 변수
@@ -305,6 +307,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     }
                     newmember['gender'] = gender_!;
                     var success = await network.addMember(newmember);
+                    String? imagePath = _image?.path;
+                    if (imagePath != null) {
+                      await apiImage.uploadProfileImage(imagePath, email!);
+                    }
                     if (success['success'] == 1) {
                       FormHelper.showSimpleAlertDialog(
                         context,
