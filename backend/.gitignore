@@ -1,1 +1,2 @@
 .env
+api/s3/config/s3_config.js
