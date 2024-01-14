@@ -7,6 +7,7 @@ import 'package:googleapis/vision/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:flutter/widgets.dart' as flutter;
 import 'package:image_picker/image_picker.dart' as image_picker;
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'screens/login.dart';
 import 'screens/signup.dart';
@@ -14,6 +15,7 @@ import 'screens/signup.dart';
 void main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
+  KakaoSdk.init(nativeAppKey:'d3f1e3967b70cf433b69a618fadbde6d');
   runApp(const MyApp());
 }
 

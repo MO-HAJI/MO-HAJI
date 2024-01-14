@@ -1,14 +1,18 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'util/login.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -51,36 +55,36 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Container(
-          //   width: MediaQuery.of(context).size.width,
-          //   height: MediaQuery.of(context).size.height / 4.5,
-          //   decoration: const BoxDecoration(
-          //       gradient: LinearGradient(
-          //         begin: Alignment.topCenter,
-          //         end: Alignment.bottomCenter,
-          //         colors: [
-          //           Colors.black54,
-          //           Colors.black54,
-          //         ],
-          //       ),
-          //       borderRadius: BorderRadius.only(
-          //         bottomLeft: Radius.circular(100),
-          //         bottomRight: Radius.circular(100),
-          //       )),
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       Align(
-          //         alignment: Alignment.center,
-          //         child: Image.asset(
-          //           "assets/images/AppLogo.png",
-          //           width: 180,
-          //           fit: BoxFit.contain,
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 4.5,
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black54,
+                    Colors.black54,
+                  ],
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(100),
+                  bottomRight: Radius.circular(100),
+                )),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    "assets/images/AppLogo.png",
+                    width: 180,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              ],
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(
               left: 20,
@@ -100,13 +104,13 @@ class _LoginPageState extends State<LoginPage> {
             context,
             "email",
             "이메일",
-            (onValidateVal) {
+                (onValidateVal) {
               if (onValidateVal.isEmpty) {
                 return '이메일을 입력해주세요.';
               }
               return null;
             },
-            (onSavedVal) {
+                (onSavedVal) {
               email = onSavedVal;
             },
             borderFocusColor: Colors.black,
@@ -124,14 +128,14 @@ class _LoginPageState extends State<LoginPage> {
               context,
               "password",
               "비밀번호",
-              (onValidateVal) {
+                  (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return '비밀번호를 입력해주세요.';
                 }
 
                 return null;
               },
-              (onSavedVal) {
+                  (onSavedVal) {
                 password = onSavedVal;
               },
               borderFocusColor: Colors.black,
@@ -162,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
           Center(
             child: FormHelper.submitButton(
               "로그인",
-              () async {
+                  () async {
                 if (validateAndSave()) {
                   isAuth = await authentication.authenticate(email, password);
                   if (isAuth) {
@@ -175,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                       "app_name",
                       "Invalid Username/Password !!",
                       "OK",
-                      () {
+                          () {
                         Navigator.of(context).pop();
                       },
                     );
@@ -203,10 +207,27 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: 20,
           ),
-          // Google 로그인 버튼 추가
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: _googleSignInButton(),
+          // Google 로그인 버튼과 네이버 로그인 버튼을 가로로 묶음
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // 가로 시작점 정렬
+              children: [
+                // Google 로그인 버튼
+                Padding(
+                  padding: const EdgeInsets.only(left: 25.0),
+                  child: _googleSignInButton(),
+                ),
+                // 네이버 로그인 버튼
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: _naverSignInButton(),
+                ),
+                Padding(
+                padding: const EdgeInsets.only(right: 25.0),
+                child: _kakaoSignInButton(),
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: 20,
@@ -226,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
           Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.only(right: 25, top: 10),
+              padding: const EdgeInsets.only(top: 0),
               child: RichText(
                 text: TextSpan(
                   style: TextStyle(
@@ -259,33 +280,31 @@ class _LoginPageState extends State<LoginPage> {
   // Google 로그인 버튼 위젯
   Widget _googleSignInButton() {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 80.0),
-    child: ElevatedButton(
-    onPressed: () async {
-    await _handleGoogleSignIn();
-    },
-      style: ElevatedButton.styleFrom(
-        primary: Colors.white,
-        onPrimary: Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/images/google_logo.png', // 구글 로고 이미지 경로
-                height: 20,
-              ),
-              SizedBox(width: 10),
-              Text('Google로 로그인'),
-            ],
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          await _handleGoogleSignIn();
+        },
+        style: ElevatedButton.styleFrom(
+          primary: Colors.white,
+          onPrimary: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/google_logo.png', // 구글 로고 이미지 경로
+                  height: 20,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -312,6 +331,99 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isGoogleSignInInProgress = false;
       });
+    }
+  }
+
+  Widget _naverSignInButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          await _handleNaverSignIn();
+        },
+        style: ElevatedButton.styleFrom(
+          primary: Colors.white,
+          onPrimary: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/naver_logo.jpg', // 네이버 로고 이미지 경로
+                  height: 20,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 네이버 로그인 처리
+  Future<void> _handleNaverSignIn() async {
+    try {
+      final NaverLoginResult res = await FlutterNaverLogin.logIn();
+      print('Naver Sign-In result: $res');
+
+      if (res.status == NaverLoginStatus.loggedIn) {
+        // 네이버 로그인 성공
+        String naverEmail = res.account.email;
+        print('Naver Sign-In success. Email: $naverEmail');
+      } else {
+        // 로그인 실패 또는 사용자가 취소한 경우
+        print('Naver Sign-In failed or user canceled.');
+      }
+    } catch (error) {
+      print('Naver Sign-In error: $error');
+    }
+  }
+
+  Widget _kakaoSignInButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          await _handleKakaoSignIn();
+        },
+        style: ElevatedButton.styleFrom(
+          primary: Colors.white,
+          onPrimary: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/kakao_logo.jpg', // 카카오 로고 이미지 경로
+                  height: 20,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+// 카카오 로그인 처리
+  Future<void> _handleKakaoSignIn() async {
+    try {
+      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+      print('카카오계정으로 로그인 성공 ${token.accessToken}');
+    } catch (error) {
+      print('카카오계정으로 로그인 실패 $error');
     }
   }
 
