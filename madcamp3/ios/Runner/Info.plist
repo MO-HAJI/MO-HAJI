@@ -33,6 +33,59 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
+				<!-- other codes -->
+				<key>KAKAO_APP_KEY</key>
+                <string>d3f1e3967b70cf433b69a618fadbde6d</string>
+            <key>CFBundleURLTypes</key>
+            <array>
+                <dict>
+                    <key>CFBundleTypeRole</key>
+                    <string>Editor</string>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>[UrlScheme]</string>
+                    </array>
+                </dict>
+            </array>
+
+            <key>LSApplicationQueriesSchemes</key>
+            <array>
+                <string>naversearchapp</string>
+                <string>naversearchthirdlogin</string>
+            </array>
+            <key>naverServiceAppUrlScheme</key>
+            <string>naver</string>
+            <key>naverConsumerKey</key>
+            <string>CNUovP26XK8Rq5om5db2</string>
+            <key>naverConsumerSecret</key>
+            <string>wNHLbFlkZJ</string>
+            <key>naverServiceAppName</key>
+            <string>madcamp3</string>
+
+            <!-- http allows configurations -->
+            <key>NSAppTransportSecurity</key>
+            <dict>
+               <key>NSAllowsArbitraryLoads</key>
+               <true/>
+               <key>NSExceptionDomains</key>
+               <dict>
+                  <key>naver.com</key>
+                  <dict>
+                     <key>NSExceptionRequiresForwardSecrecy</key>
+                     <false/>
+                     <key>NSIncludesSubdomains</key>
+                     <true/>
+                  </dict>
+                  <key>naver.net</key>
+                  <dict>
+                     <key>NSExceptionRequiresForwardSecrecy</key>
+                     <false/>
+                     <key>NSIncludesSubdomains</key>
+                     <true/>
+                  </dict>
+               </dict>
+            </dict>
+        </dict>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
