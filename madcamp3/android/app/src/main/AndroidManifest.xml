@@ -12,6 +12,9 @@
         <meta-data
             android:name="com.naver.sdk.clientName"
             android:value="@string/client_name" />
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="hxz7cc3je7" />
         <activity
             android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
             android:exported="true">
