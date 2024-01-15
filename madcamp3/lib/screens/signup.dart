@@ -410,7 +410,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   radius: 80,
                   backgroundColor: Colors.black,
                   child: CircleAvatar(
-                      radius: 78,
+                      radius: 80,
                       backgroundColor: Colors.white,
                       backgroundImage: _image != null
                           ? FileImage(File(_image!.path))
