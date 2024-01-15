@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: VisionApiExample(),
+      home: LoginPage(),
       routes: {
         '/tab': (context) => const TabPage(),
         '/mypage': (context) => const ProfilePage(),
@@ -38,4 +38,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

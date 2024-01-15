@@ -66,7 +66,7 @@ class GptApi {
       responseBody = jsonDecode(response.body);
       _responseModel = ResponseModel.fromMap(responseBody);
       responseTxt = utf8.decode(responseBody['choices'][0]['text'].codeUnits);
-      print('responseTxt2: ' + responseTxt);
+      // print('responseTxt2: ' + responseTxt);
     } catch (e) {
       print('Error decoding JSON: $e');
       responseTxt = 'Error decoding response';
@@ -95,7 +95,7 @@ class GptApi {
       responseBody = jsonDecode(response.body);
       _responseModel = ResponseModel.fromMap(responseBody);
       responseTxt = utf8.decode(responseBody['choices'][0]['text'].codeUnits);
-      print('responseTxt3: ' + responseTxt);
+      // print('responseTxt3: ' + responseTxt);
     } catch (e) {
       print('Error decoding JSON: $e');
       responseTxt = 'Error decoding response';

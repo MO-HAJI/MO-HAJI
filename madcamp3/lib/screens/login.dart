@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:madcamp3/screens/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
@@ -205,7 +206,8 @@ class _LoginPageState extends State<LoginPage> {
                     text: '회원가입',
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Navigator.pushNamed(context, '/register');
+                        // Navigator.pushNamed(context, '/register');
+                        Navigator.of(context).push(_createRoute());
                       },
                     style: TextStyle(
                       color: Colors.black,
@@ -461,4 +463,25 @@ class _LoginPageState extends State<LoginPage> {
     // await prefs.setString('username', username);
     await prefs.setString('email', email);
   }
+}
+
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const RegisterPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      const Duration duration = Duration(seconds: 1);
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
