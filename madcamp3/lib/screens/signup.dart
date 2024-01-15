@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:madcamp3/screens/login.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
@@ -82,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _buildTop() {
     return SizedBox(
       width: mediaSize.width,
-      child: const Column(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
@@ -97,7 +99,36 @@ class _RegisterPageState extends State<RegisterPage> {
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 letterSpacing: 2),
-          )
+          ),
+          const SizedBox(height: 20),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: 30.0),
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.0,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(text: "계정이 이미 있으신가요? "),
+                    TextSpan(
+                      text: '로그인',
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.of(context).push(_createRoute());
+                        },
+                      style: TextStyle(
+                        color: Colors.white,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -525,4 +556,24 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return null;
   }
+}
+
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      const Duration duration = Duration(seconds: 1);
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
