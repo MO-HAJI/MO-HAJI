@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:madcamp3/screens/mypage.dart';
+import 'package:madcamp3/screens/profile.dart';
 
 import 'home.dart';
 
@@ -55,7 +55,7 @@ class _TabPageState extends State<TabPage> with SingleTickerProviderStateMixin {
               children: [
                 VisionApiExample(),
                 Text("food"),
-                mypage(),
+                ProfilePage(),
               ],
             ),
           )),

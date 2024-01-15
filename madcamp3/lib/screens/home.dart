@@ -8,6 +8,8 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:flutter/widgets.dart' as flutter;
 import 'package:image_picker/image_picker.dart' as image_picker;
 
+import '../service/api_gpt.dart';
+
 class VisionApiExample extends StatefulWidget {
   @override
   _VisionApiExampleState createState() => _VisionApiExampleState();
@@ -17,6 +19,8 @@ class _VisionApiExampleState extends State<VisionApiExample> {
   File? _selectedImage;
   String _extractedText = '';
   List<String?> _labels = [];
+
+  GptApi gptApi = GptApi();
 
   Future<void> _selectImage() async {
     final image_picker.ImagePicker picker = image_picker.ImagePicker();
@@ -91,6 +95,15 @@ class _VisionApiExampleState extends State<VisionApiExample> {
             _labels = labels;
           });
           print('Labels: $labels');
+
+          String tmp = _labels.where((label) => label != null).join(', ');
+          print('tmp: ' + tmp);
+          String str1 = await gptApi.getKeyword(tmp);
+          print('str1: ' + str1);
+          String str2 = await gptApi.getRecipe(str1);
+          print('str2: ' + str2);
+          String str3 = await gptApi.getAllergy(str2);
+          print('str3: ' + str3);
         }
       } else {
         setState(() {
