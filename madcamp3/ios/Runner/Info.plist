@@ -6,99 +6,99 @@
     <string>이 앱이 카메라에 접근하는 이유를 설명하는 메시지</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>이 앱이 사진에 접근하는 이유를 설명하는 메시지</string>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Madcamp3</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>madcamp3</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UISupportedInterfaceOrientations</key>
-				<!-- other codes -->
-				<key>KAKAO_APP_KEY</key>
-                <string>d3f1e3967b70cf433b69a618fadbde6d</string>
-            <key>CFBundleURLTypes</key>
-            <array>
-                <dict>
-                    <key>CFBundleTypeRole</key>
-                    <string>Editor</string>
-                    <key>CFBundleURLSchemes</key>
-                    <array>
-                        <string>[UrlScheme]</string>
-                    </array>
-                </dict>
-            </array>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleDisplayName</key>
+    <string>Madcamp3</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>madcamp3</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(FLUTTER_BUILD_NAME)</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleVersion</key>
+    <string>$(FLUTTER_BUILD_NUMBER)</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
 
-            <key>LSApplicationQueriesSchemes</key>
-            <array>
-                <string>naversearchapp</string>
-                <string>naversearchthirdlogin</string>
-            </array>
-            <key>naverServiceAppUrlScheme</key>
-            <string>naver</string>
-            <key>naverConsumerKey</key>
-            <string>CNUovP26XK8Rq5om5db2</string>
-            <key>naverConsumerSecret</key>
-            <string>wNHLbFlkZJ</string>
-            <key>naverServiceAppName</key>
-            <string>madcamp3</string>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
 
-            <!-- http allows configurations -->
-            <key>NSAppTransportSecurity</key>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>[UrlScheme]</string>
+            </array>
+        </dict>
+    </array>
+
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>naversearchapp</string>
+        <string>naversearchthirdlogin</string>
+    </array>
+    <key>naverServiceAppUrlScheme</key>
+    <string>naver</string>
+    <key>naverConsumerKey</key>
+    <string>CNUovP26XK8Rq5om5db2</string>
+    <key>naverConsumerSecret</key>
+    <string>wNHLbFlkZJ</string>
+    <key>naverServiceAppName</key>
+    <string>madcamp3</string>
+
+    <!-- http allows configurations -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>naver.com</key>
             <dict>
-               <key>NSAllowsArbitraryLoads</key>
-               <true/>
-               <key>NSExceptionDomains</key>
-               <dict>
-                  <key>naver.com</key>
-                  <dict>
-                     <key>NSExceptionRequiresForwardSecrecy</key>
-                     <false/>
-                     <key>NSIncludesSubdomains</key>
-                     <true/>
-                  </dict>
-                  <key>naver.net</key>
-                  <dict>
-                     <key>NSExceptionRequiresForwardSecrecy</key>
-                     <false/>
-                     <key>NSIncludesSubdomains</key>
-                     <true/>
-                  </dict>
-               </dict>
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <false/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+            <key>naver.net</key>
+            <dict>
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <false/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
             </dict>
         </dict>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<array>
+    </dict>
+
+    <key>URLTypes</key>
+    <array>
         <dict>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
@@ -109,9 +109,10 @@
             </array>
         </dict>
     </array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
 </dict>
 </plist>
