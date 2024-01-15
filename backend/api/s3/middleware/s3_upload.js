@@ -2,6 +2,7 @@ const multer = require("multer");
 const multerS3 = require("multer-s3-transform");
 const AWS = require("aws-sdk");
 const config = require("../config/s3_config");
+const db = require("../../../database");
 
 // const { S3Client } = require("@aws-sdk/client-s3");
 // const { fromIni } = require("@aws-sdk/credential-provider-ini");
@@ -20,7 +21,25 @@ const upload = multer({
         // acl: "public-read", // upload된 파일을 URL로 읽을 수 있도록 설정
         key: function (req, file, cb) {
             if (file.fieldname == "profileimage") {
-                cb(null, "profile/" + file.originalname);
+                const filename =
+                    "profile/" + Date.now() + "_" + file.originalname;
+                cb(null, filename);
+
+                const email = req.body.email;
+                console.log("Email:", email);
+
+                // store filename as a key
+                db.query(
+                    "UPDATE users SET profile_image = ? WHERE email = ?",
+                    [filename, email],
+                    (err, result) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(result);
+                        }
+                    }
+                );
             }
         },
     }),
