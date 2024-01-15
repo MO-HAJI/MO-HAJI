@@ -1,4 +1,4 @@
-const upload = require("../middleware/s3_upload");
+const upload = require("../middleware/s3_upload"); // s3 upload middleware
 
 // function to upload file
 const uploadFile = async (req, res) => {
