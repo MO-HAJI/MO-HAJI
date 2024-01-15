@@ -1,47 +1,65 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:madcamp3/screens/bottom_navigation.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 import '../service/network.dart';
-import '../service/api_image.dart';
+import '../models/user.dart';
 
 enum genderType { male, female }
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class EditInfoPage extends StatefulWidget {
+  const EditInfoPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<EditInfoPage> createState() => _EditInfoPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _EditInfoPageState extends State<EditInfoPage> {
+  final TextEditingController emailController =
+      TextEditingController(text: "initial@example.com");
   bool isAPIcallProcess = false;
   bool hidePassword = true;
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+
   String? username;
 
   // DateTime? birth = DateTime(0, 0, 0);
-  String? birth = "1901-01-01";
+  String? birth = "생년월일을 선택해주세요.";
   genderType? gender;
   String? gender_;
-  String? genderOnly = "성별";
+  String? genderOnly = "성별을 선택해주세요.";
   String? email;
   String? password;
 
   Network network = Network();
-  APIImage apiImage = APIImage();
 
-  // 이미지
-  XFile? _image; // 이미지를 담을 변수
-  final ImagePicker _picker = ImagePicker(); // 이미지를 가져올 피커
+  @override
+  void initState() {
+    super.initState();
+    getDbData();
+  }
 
-  Future getImage(ImageSource imageSource) async {
-    final XFile? pickedFile = await _picker.pickImage(source: imageSource);
-    if (pickedFile == null) return;
+  getDbData() async {
+    Network network = Network();
+    Map<String, String> check = {
+      "email": User.current.email,
+    };
+    var checked_data = await network.checkMemberByEmail(check);
+
+    DateTime date = DateTime.parse(checked_data['birth']);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    var gen = "남자";
+    if (checked_data['gender'].toString() == 1) {
+      gen = "여자";
+    }
     setState(() {
-      _image = XFile(pickedFile.path);
+      username = checked_data['name'];
+      birth = formattedDate;
+      gender_ = checked_data['gender'].toString();
+      genderOnly = gen;
+      email = checked_data['email'];
     });
   }
 
@@ -71,11 +89,11 @@ class _RegisterPageState extends State<RegisterPage> {
             Padding(
               padding: const EdgeInsets.only(
                 left: 20,
-                bottom: 10,
+                bottom: 30,
                 top: 50,
               ),
               child: Text(
-                "회원가입",
+                "개인정보 수정",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 25,
@@ -83,16 +101,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            buildProfileImage(),
             FormHelper.inputFieldWidget(
+              initialValue: username.toString(),
               context,
               "username",
               "이름(닉네임)",
               (onValidateVal) {
                 if (onValidateVal.isEmpty) {
-                  return '이름(닉네임)을 입력해주세요.';
+                  return 'Username can\'t be empty.';
                 }
-
                 return null;
               },
               (onSavedVal) {
@@ -110,16 +127,14 @@ class _RegisterPageState extends State<RegisterPage> {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: FormHelper.inputFieldWidget(
+                isReadonly: true,
+                initialValue: email.toString(),
                 context,
                 "email",
                 "이메일",
                 (onValidateVal) {
                   if (onValidateVal.isEmpty) {
-                    return '이메일을 입력해주세요.';
-                  }
-
-                  if (validateEmail(onValidateVal) != null) {
-                    return validateEmail(onValidateVal);
+                    return 'Email can\'t be empty.';
                   }
 
                   return null;
@@ -200,9 +215,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 25.0),
                           child: Text(
-                            (birth == "1901-01-01")
-                                ? "생년월일을 입력해주세요."
-                                : birth.toString(),
+                            "$birth",
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
                         ),
@@ -247,7 +260,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 25.0),
                         child: Text(
-                          "$genderOnly",
+                          genderOnly.toString(),
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ),
@@ -268,10 +281,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         onChanged: (selectedGender) {
                           // Handle value change
                           setState(() {
-                            gender = selectedGender as genderType?;
-                            if (gender.toString().contains("female")) {
+                            if (selectedGender == genderType.female) {
                               genderOnly = "여자";
-                            } else if (gender.toString().contains("male")) {
+                            } else if (selectedGender == genderType.male) {
                               genderOnly = "남자";
                             } else {
                               genderOnly = "성별";
@@ -289,7 +301,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             Center(
               child: FormHelper.submitButton(
-                "회원가입",
+                "정보수정",
                 () async {
                   if (validateAndSave()) {
                     Map<String, String> newmember = {};
@@ -303,29 +315,25 @@ class _RegisterPageState extends State<RegisterPage> {
                       gender_ = "0";
                     }
                     newmember['gender'] = gender_!;
-                    var success = await network.addMember(newmember);
-                    String? imagePath = _image?.path;
-                    if (imagePath != null) {
-                      await apiImage.uploadProfileImage(imagePath, email!);
-                    }
+                    var success = await network.updateMember(newmember);
                     if (success['success'] == 1) {
                       FormHelper.showSimpleAlertDialog(
-                        context,
-                        "app_name",
-                        "회원가입 성공 !!",
-                        "OK",
-                        () {
-                          Navigator.pushNamed(context, '/login');
-                        },
-                      );
+                          context, "app_name", "정보변경 성공 !!", "OK", () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TabPage(initialTabIndex: 2),
+                          ),
+                        );
+                      });
                     } else {
                       FormHelper.showSimpleAlertDialog(
                         context,
                         "app_name",
-                        "회원가입 실패 !!",
+                        "정보변경 실패 !!",
                         "OK",
                         () {
-                          Navigator.pushNamed(context, '/register');
+                          Navigator.pushNamed(context, '/edit');
                         },
                       );
                     }
@@ -338,83 +346,6 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
           ]),
-    );
-  }
-
-  Widget buildProfileImage() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 30.0),
-      child: Center(
-        child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              CircleAvatar(
-                  radius: 100,
-                  backgroundColor: Colors.black54,
-                  child: CircleAvatar(
-                      radius: 98,
-                      backgroundColor: Colors.white,
-                      backgroundImage: _image != null
-                          ? FileImage(File(_image!.path))
-                              as ImageProvider<Object>?
-                          : AssetImage('assets/images/default_profile.png'))),
-              SizedBox(height: 10),
-              Positioned(bottom: -10, child: buildImageButton()),
-            ]),
-      ),
-    );
-  }
-
-  Widget buildImageButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircleAvatar(
-          radius: 16,
-          backgroundColor: Colors.black,
-          child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.white,
-              child: Material(
-                shape: CircleBorder(),
-                clipBehavior: Clip.hardEdge,
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    getImage(
-                        ImageSource.camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
-                  },
-                  child: Center(
-                    child:
-                        Icon(Icons.camera_alt, size: 22, color: Colors.black),
-                  ),
-                ),
-              )),
-        ),
-        SizedBox(width: 6),
-        CircleAvatar(
-          radius: 16,
-          backgroundColor: Colors.black,
-          child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.white,
-              child: Material(
-                shape: CircleBorder(),
-                clipBehavior: Clip.hardEdge,
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    getImage(
-                        ImageSource.gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
-                  },
-                  child: Center(
-                    child: Icon(Icons.photo, size: 22, color: Colors.black),
-                  ),
-                ),
-              )),
-        ),
-      ],
     );
   }
 
@@ -446,18 +377,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return false;
   }
 
-  // 이메일 형식 확인 함수
-  String? validateEmail(String value) {
-    String pattern =
-        r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$'; // 기본적인 이메일 형식 정규식
-    RegExp regex = RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return '올바른 이메일 형식이 아닙니다.';
-    }
-    return null;
-  }
-
-// 비밀번호 형식 확인 함수
+  // 비밀번호 형식 확인 함수
   String? validatePassword(String value) {
     // 비밀번호는 최소 8자 이상, 영문, 숫자, 특수문자를 포함해야 함
     String pattern =

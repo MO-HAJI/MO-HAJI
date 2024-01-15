@@ -1,16 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:googleapis/vision/v1.dart';
-import 'package:googleapis_auth/auth_io.dart';
-import 'package:flutter/widgets.dart' as flutter;
-import 'package:image_picker/image_picker.dart' as image_picker;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:madcamp3/screens/bottom_navigation.dart';
+import 'package:madcamp3/screens/edit_info.dart';
 import 'package:madcamp3/screens/home.dart';
-import 'package:madcamp3/screens/mypage.dart';
+import 'package:madcamp3/screens/profile.dart';
 
 import 'screens/login.dart';
 import 'screens/signup.dart';
@@ -35,10 +29,11 @@ class MyApp extends StatelessWidget {
       home: VisionApiExample(),
       routes: {
         '/tab': (context) => const TabPage(),
-        '/mypage': (context) => const mypage(),
+        '/mypage': (context) => const ProfilePage(),
         '/visionapi': (context) => VisionApiExample(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
+        '/edit': (context) => const EditInfoPage(),
       },
     );
   }
