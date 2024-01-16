@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:madcamp3/screens/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
@@ -33,15 +34,31 @@ class _LoginPageState extends State<LoginPage> {
   String? password;
   Authentication authentication = Authentication();
 
+  late Color myColor;
+  late Size mediaSize;
+
   // Google Sign-In
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   bool _isGoogleSignInInProgress = false;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    myColor = Colors.black;
+    mediaSize = MediaQuery.of(context).size;
+    return Container(
+      decoration: BoxDecoration(
+        color: myColor,
+        // image: DecorationImage(
+        //   image: AssetImage("assets/images/bg.jpg"),
+        //   fit: BoxFit.cover,
+        //   colorFilter: ColorFilter.mode(
+        //     myColor.withOpacity(0.2),
+        //     BlendMode.dstATop,
+        //   ),
+        // ),
+      ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         body: ProgressHUD(
           child: Form(
             key: globalFormKey,
@@ -56,230 +73,236 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginUI(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 4.5,
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black54,
-                    Colors.black54,
-                  ],
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(100),
-                  bottomRight: Radius.circular(100),
-                )),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    "assets/images/AppLogo.png",
-                    width: 180,
-                    fit: BoxFit.contain,
-                  ),
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 20,
-              bottom: 30,
-              top: 50,
-            ),
-            child: Text(
-              "로그인",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          FormHelper.inputFieldWidget(
-            context,
-            "email",
-            "이메일",
-                (onValidateVal) {
-              if (onValidateVal.isEmpty) {
-                return '이메일을 입력해주세요.';
-              }
-              return null;
-            },
-                (onSavedVal) {
-              email = onSavedVal;
-            },
-            borderFocusColor: Colors.black,
-            prefixIconColor: Colors.black,
-            borderColor: Colors.black,
-            textColor: Colors.black,
-            hintColor: Colors.black.withOpacity(0.7),
-            borderRadius: 10,
-            showPrefixIcon: true,
-            prefixIcon: Icon(Icons.account_box),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: FormHelper.inputFieldWidget(
-              context,
-              "password",
-              "비밀번호",
-                  (onValidateVal) {
-                if (onValidateVal.isEmpty) {
-                  return '비밀번호를 입력해주세요.';
-                }
+    return Stack(
+      children: [
+        Positioned(top: 110, child: _buildTop()),
+        Positioned(bottom: 0, child: _buildBottom(context)),
+      ],
+    );
+  }
 
-                return null;
-              },
-                  (onSavedVal) {
-                password = onSavedVal;
-              },
-              borderFocusColor: Colors.black,
-              prefixIconColor: Colors.black,
-              borderColor: Colors.black,
-              textColor: Colors.black,
-              hintColor: Colors.black.withOpacity(0.7),
-              borderRadius: 10,
-              showPrefixIcon: true,
-              prefixIcon: Icon(Icons.password),
-              obscureText: hidePassword,
-              suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() {
-                    hidePassword = !hidePassword;
-                  });
-                },
-                color: Colors.black.withOpacity(0.7),
-                icon: Icon(
-                  hidePassword ? Icons.visibility_off : Icons.visibility,
-                ),
-              ),
-            ),
+  Widget _buildTop() {
+    return SizedBox(
+      width: mediaSize.width,
+      child: const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.location_on_sharp,
+            size: 100,
+            color: Colors.white,
           ),
-          SizedBox(
-            height: 30,
-          ),
-          Center(
-            child: FormHelper.submitButton(
-              "로그인",
-                  () async {
-                if (validateAndSave()) {
-                  isAuth = await authentication.authenticate(email, password);
-                  if (isAuth) {
-                    saveUserInfo(email.toString());
-                    Navigator.pushNamed(context, '/tab');
-                  } else {
-                    print("Login failed");
-                    FormHelper.showSimpleAlertDialog(
-                      context,
-                      "app_name",
-                      "Invalid Username/Password !!",
-                      "OK",
-                          () {
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  }
-                }
-              },
-              btnColor: Colors.white,
-              borderColor: Colors.black,
-              txtColor: Colors.black,
-              borderRadius: 10,
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: Text(
-              "OR",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.black),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          // Google 로그인 버튼과 네이버 로그인 버튼을 가로로 묶음
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // 가로 시작점 정렬
-              children: [
-                // Google 로그인 버튼
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0),
-                  child: _googleSignInButton(),
-                ),
-                // 네이버 로그인 버튼
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: _naverSignInButton(),
-                ),
-                Padding(
-                padding: const EdgeInsets.only(right: 25.0),
-                child: _kakaoSignInButton(),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: Text(
-              "OR",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.black),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 0),
-              child: RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14.0,
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(text: "계정이 없으신가요? "),
-                    TextSpan(
-                      text: '회원가입',
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.pushNamed(context, '/register');
-                        },
-                      style: TextStyle(
-                        color: Colors.black,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          Text(
+            "MO HAJI",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 40,
+                letterSpacing: 2),
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildBottom(BuildContext context) {
+    return SizedBox(
+      width: mediaSize.width,
+      child: Card(
+        color: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: _buildForm(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Login",
+          style: TextStyle(
+              color: myColor, fontSize: 32, fontWeight: FontWeight.w500),
+        ),
+        _buildGreyText("Please login with your information"),
+        const SizedBox(height: 40),
+        FormHelper.inputFieldWidget(
+          context,
+          "email",
+          "이메일",
+          (onValidateVal) {
+            if (onValidateVal.isEmpty) {
+              return '이메일을 입력해주세요.';
+            }
+            return null;
+          },
+          (onSavedVal) {
+            email = onSavedVal;
+          },
+          borderFocusColor: Colors.black,
+          prefixIconColor: Colors.black,
+          borderColor: Colors.black,
+          textColor: Colors.black,
+          hintColor: Colors.black.withOpacity(0.7),
+          borderRadius: 10,
+          showPrefixIcon: true,
+          prefixIcon: Icon(Icons.account_box),
+        ),
+        const SizedBox(height: 20),
+        FormHelper.inputFieldWidget(
+          context,
+          "password",
+          "비밀번호",
+          (onValidateVal) {
+            if (onValidateVal.isEmpty) {
+              return '비밀번호를 입력해주세요.';
+            }
+
+            return null;
+          },
+          (onSavedVal) {
+            password = onSavedVal;
+          },
+          borderFocusColor: Colors.black,
+          prefixIconColor: Colors.black,
+          borderColor: Colors.black,
+          textColor: Colors.black,
+          hintColor: Colors.black.withOpacity(0.7),
+          borderRadius: 10,
+          showPrefixIcon: true,
+          prefixIcon: Icon(Icons.password),
+          obscureText: hidePassword,
+          suffixIcon: IconButton(
+            onPressed: () {
+              setState(() {
+                hidePassword = !hidePassword;
+              });
+            },
+            color: Colors.black.withOpacity(0.7),
+            icon: Icon(
+              hidePassword ? Icons.visibility_off : Icons.visibility,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 30,
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 0),
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14.0,
+                ),
+                children: <TextSpan>[
+                  TextSpan(text: "계정이 없으신가요? "),
+                  TextSpan(
+                    text: '회원가입',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // Navigator.pushNamed(context, '/register');
+                        Navigator.of(context).push(_createRoute());
+                      },
+                    style: TextStyle(
+                      color: Colors.black,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 30,
+        ),
+        Center(
+          child: FormHelper.submitButton(
+            "로그인",
+            () async {
+              if (validateAndSave()) {
+                isAuth = await authentication.authenticate(email, password);
+                if (isAuth) {
+                  saveUserInfo(email.toString());
+                  Navigator.pushNamed(context, '/tab');
+                } else {
+                  print("Login failed");
+                  FormHelper.showSimpleAlertDialog(
+                    context,
+                    "app_name",
+                    "Invalid Username/Password !!",
+                    "OK",
+                    () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                }
+              }
+            },
+            btnColor: Colors.transparent,
+            borderColor: Colors.black,
+            txtColor: Colors.black,
+            borderRadius: 10,
+          ),
+        ),
+        SizedBox(
+          height: 30,
+        ),
+        Center(
+          child: Text(
+            "OR",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        // Google 로그인 버튼과 네이버 로그인 버튼을 가로로 묶음
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, // 가로 시작점 정렬
+            children: [
+              // Google 로그인 버튼
+              Padding(
+                padding: const EdgeInsets.only(left: 25.0),
+                child: _googleSignInButton(),
+              ),
+              // 네이버 로그인 버튼
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: _naverSignInButton(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 25.0),
+                child: _kakaoSignInButton(),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 50,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGreyText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(color: Colors.grey),
     );
   }
 
@@ -322,8 +345,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isGoogleSignInInProgress = true;
       });
-      GoogleSignInAccount? googleSignInAccount =
-      await _googleSignIn.signIn();
+      GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
       if (googleSignInAccount != null) {
         // Google 로그인 성공
         String googleEmail = googleSignInAccount.email;
@@ -361,7 +383,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(
-                  'assets/images/naver_logo.jpg', // 네이버 로고 이미지 경로
+                  'assets/images/naver.png', // 네이버 로고 이미지 경로
                   height: 20,
                 ),
               ],
@@ -447,4 +469,25 @@ class _LoginPageState extends State<LoginPage> {
     // await prefs.setString('username', username);
     await prefs.setString('email', email);
   }
+}
+
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const RegisterPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      const Duration duration = Duration(seconds: 1);
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }

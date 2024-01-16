@@ -4,5 +4,6 @@ const express = require("express");
 const router = express.Router();
 
 router.post("/image-upload", uploadController.uploadFile);
+router.get("/foodimage/:email", uploadController.getFoodImage);
 
 module.exports = router;

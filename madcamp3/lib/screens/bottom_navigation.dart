@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:madcamp3/screens/mypage.dart';
-import 'package:madcamp3/screens/naver.dart';
+import 'package:madcamp3/screens/profile.dart';
+import 'package:madcamp3/screens/recipe.dart';
 
-import 'home.dart';
+import 'food.dart';
 
 class TabPage extends StatefulWidget {
   final int initialTabIndex;
@@ -53,11 +53,10 @@ class _TabPageState extends State<TabPage> with SingleTickerProviderStateMixin {
             ]),
             body: TabBarView(
               controller: _tabController,
-              physics: NeverScrollableScrollPhysics(),
               children: [
-                VisionApiExample(),
-                NaverAPI(),
-                mypage(),
+                Dashboard(),
+                Text("food"),
+                ProfilePage(),
               ],
             ),
           )),
