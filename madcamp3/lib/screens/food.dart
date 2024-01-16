@@ -74,6 +74,13 @@ class _DashboardState extends State<Dashboard> {
     final image_picker.XFile? pickedFile =
         await picker.pickImage(source: image_picker.ImageSource.gallery);
 
+    // loading circle
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(child: CircularProgressIndicator());
+        });
+
     if (pickedFile != null) {
       final String? extractedScript =
           await visionApi.extractLabels(File(pickedFile.path));
@@ -81,9 +88,16 @@ class _DashboardState extends State<Dashboard> {
 
       XFile? _selectedImage = XFile(pickedFile.path);
       String? imagePath = _selectedImage?.path;
+
       await apiImage.uploadFoodImage(imagePath, email!, keyword);
       await getDbData();
-      _current = images.length - 1;
+
+      setState(() {
+        _current = images.length - 1;
+      });
+
+      // remove loading circle
+      Navigator.pop(context);
     }
   }
 

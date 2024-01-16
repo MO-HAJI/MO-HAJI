@@ -10,8 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NaverMapSdk.instance.initialize(clientId: 'hxz7cc3je7');
@@ -27,7 +25,10 @@ class NaverAPI extends StatefulWidget {
 
 class _NaverAPIState extends State<NaverAPI> {
   late NaverMapController mapController;
-  late NCameraPosition initialCameraPosition;
+  late NCameraPosition initialCameraPosition = NCameraPosition(
+    target: NLatLng(37.5666102, 126.9783881),
+    zoom: 12.5,
+  );
   late List<NMarker> markers = [];
   final HtmlUnescape htmlUnescape = HtmlUnescape();
 
@@ -41,11 +42,13 @@ class _NaverAPIState extends State<NaverAPI> {
 
   void determineLocation() async {
     try {
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
       print("Current Location: ${position.latitude}, ${position.longitude}");
 
       // Reverse geocoding to get the address
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
       if (placemarks.isNotEmpty) {
         Placemark firstPlacemark = placemarks.first;
         String city = firstPlacemark.subAdministrativeArea ?? "";
@@ -55,7 +58,8 @@ class _NaverAPIState extends State<NaverAPI> {
         String addressDetails = "$city $district $thoroughfare";
         print("Current Address Details: $addressDetails");
         searchRestaurants("$addressDetails $GPTmenu");
-      };
+      }
+      ;
 
       setState(() {
         initialCameraPosition = NCameraPosition(
@@ -63,7 +67,6 @@ class _NaverAPIState extends State<NaverAPI> {
           zoom: 12.5,
         );
       });
-
     } catch (e) {
       print("Error getting location: $e");
       // Handle the exception, show a user-friendly message, or take appropriate action.
@@ -74,7 +77,8 @@ class _NaverAPIState extends State<NaverAPI> {
     // Replace YOUR_CLIENT_ID and YOUR_CLIENT_SECRET with your Naver API credentials
     final clientId = "CNUovP26XK8Rq5om5db2";
     final clientSecret = "wNHLbFlkZJ";
-    final apiUrl = "https://openapi.naver.com/v1/search/local.json"; // Updated endpoint
+    final apiUrl =
+        "https://openapi.naver.com/v1/search/local.json"; // Updated endpoint
 
     final response = await http.get(
       Uri.parse(
@@ -107,7 +111,7 @@ class _NaverAPIState extends State<NaverAPI> {
         final double Lng = lng / 10000000;
 
         // Add marker to the list with an ID
-        final marker= NMarker(
+        final marker = NMarker(
           id: id,
           position: NLatLng(Lat, Lng),
         );
@@ -120,7 +124,8 @@ class _NaverAPIState extends State<NaverAPI> {
                 initialChildSize: 1,
                 minChildSize: 0.2,
                 maxChildSize: 1,
-                builder: (BuildContext context, ScrollController scrollController) {
+                builder:
+                    (BuildContext context, ScrollController scrollController) {
                   return Container(
                     padding: EdgeInsets.all(16.0),
                     child: Column(
@@ -141,7 +146,8 @@ class _NaverAPIState extends State<NaverAPI> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Html(
-                            data: '<div style="font-size: 18px; font-weight: bold;">$name</div>',
+                            data:
+                                '<div style="font-size: 18px; font-weight: bold;">$name</div>',
                           ),
                         ),
                         ListTile(
@@ -183,9 +189,11 @@ class _NaverAPIState extends State<NaverAPI> {
         id = nextId.toString();
 
         // Add your logic to display or store restaurant information
-        print("Restaurant: $name, Category: $category, RoadAddress: $roadAddress, Link: $link, Location: $Lat, $Lng");
+        print(
+            "Restaurant: $name, Category: $category, RoadAddress: $roadAddress, Link: $link, Location: $Lat, $Lng");
       }
-      await mapController.addOverlayAll({markers[0], markers[1], markers[2], markers[3], markers[4]});
+      await mapController.addOverlayAll(
+          {markers[0], markers[1], markers[2], markers[3], markers[4]});
     } else {
       print("Failed to fetch restaurants. Status code: ${response.statusCode}");
     }
