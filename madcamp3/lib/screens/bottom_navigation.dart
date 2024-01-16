@@ -54,6 +54,7 @@ class _TabPageState extends State<TabPage> with SingleTickerProviderStateMixin {
             ]),
             body: TabBarView(
               controller: _tabController,
+              physics: NeverScrollableScrollPhysics(),
               children: [
                 Dashboard(),
                 NaverAPI(),
