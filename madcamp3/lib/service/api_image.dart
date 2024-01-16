@@ -8,9 +8,9 @@ import 'package:http/http.dart' as http;
 import 'api_gpt.dart';
 
 class APIImage {
-  // final baseUrl = "3.39.88.217:8000";
+  final baseUrl = "3.39.88.217:8000";
 
-  final baseUrl = "127.0.0.1:8000";
+  // final baseUrl = "127.0.0.1:8000";
 
   GptApi gptApi = GptApi();
 
