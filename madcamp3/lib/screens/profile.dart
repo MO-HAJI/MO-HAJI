@@ -133,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
               radius: profileHeight / 1.5,
               backgroundColor: Colors.grey.shade800,
               backgroundImage: userImage != null
-                  ? NetworkImage(apiImage.getProfileImage(userImage)!)
+                  ? NetworkImage(apiImage.getImage(userImage)!)
                   : AssetImage('assets/images/default_profile.png')
                       as ImageProvider,
             ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:madcamp3/screens/profile.dart';
 import 'package:madcamp3/screens/recipe.dart';
 
-import 'home.dart';
+import 'food.dart';
 
 class TabPage extends StatefulWidget {
   final int initialTabIndex;
@@ -54,7 +54,7 @@ class _TabPageState extends State<TabPage> with SingleTickerProviderStateMixin {
             body: TabBarView(
               controller: _tabController,
               children: [
-                HomePage(),
+                Dashboard(),
                 Text("food"),
                 ProfilePage(),
               ],

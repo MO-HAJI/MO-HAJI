@@ -40,6 +40,28 @@ const upload = multer({
                         }
                     }
                 );
+            } else if (file.fieldname == "foodimage") {
+                const filename = "food/" + Date.now() + "_" + file.originalname;
+                cb(null, filename);
+
+                const email = req.body.email;
+                const keyword = req.body.keyword;
+                const recipe = req.body.recipe;
+                const allergy = req.body.allergy;
+                console.log("Email:", email);
+
+                // store filename as a key
+                db.query(
+                    "INSERT INTO images (email, url, keyword, recipe, allergy) VALUES(?,?,?,?,?)",
+                    [email, filename, keyword, recipe, allergy],
+                    (err, result) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(result);
+                        }
+                    }
+                );
             }
         },
     }),
@@ -48,6 +70,10 @@ const upload = multer({
 module.exports = upload.fields([
     {
         name: "profileimage",
+        maxCount: 1,
+    },
+    {
+        name: "foodimage",
         maxCount: 1,
     },
 ]);

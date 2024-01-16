@@ -3,7 +3,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:madcamp3/screens/bottom_navigation.dart';
 import 'package:madcamp3/screens/edit_info.dart';
-import 'package:madcamp3/screens/home.dart';
 import 'package:madcamp3/screens/profile.dart';
 
 import 'screens/login.dart';
@@ -30,7 +29,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/tab': (context) => const TabPage(),
         '/mypage': (context) => const ProfilePage(),
-        // '/visionapi': (context) => VisionApiExample(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/edit': (context) => const EditInfoPage(),
