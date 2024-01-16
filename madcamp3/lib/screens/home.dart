@@ -8,18 +8,20 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:flutter/widgets.dart' as flutter;
 import 'package:image_picker/image_picker.dart' as image_picker;
 
+import '../service/api_google_vision.dart';
 import '../service/api_gpt.dart';
 
-class VisionApiExample extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
-  _VisionApiExampleState createState() => _VisionApiExampleState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _VisionApiExampleState extends State<VisionApiExample> {
+class _HomePageState extends State<HomePage> {
   File? _selectedImage;
-  String _extractedText = '';
-  List<String?> _labels = [];
+  String? script;
+  String keyword = ' ';
 
+  VisonApi visionApi = VisonApi();
   GptApi gptApi = GptApi();
 
   Future<void> _selectImage() async {
@@ -28,92 +30,15 @@ class _VisionApiExampleState extends State<VisionApiExample> {
         await picker.pickImage(source: image_picker.ImageSource.gallery);
 
     if (pickedFile != null) {
+      final String? extractedScript =
+          await visionApi.extractLabels(File(pickedFile.path));
+      final String extractedKeyword = await gptApi.getKeyword(extractedScript!);
+
       setState(() {
         _selectedImage = File(pickedFile.path);
-        _extractedText =
-            ''; // Reset extracted text when a new image is selected
+        script = extractedScript;
+        keyword = extractedKeyword;
       });
-      _extractTextAndLabelsFromImage();
-    }
-  }
-
-  Future<void> _extractTextAndLabelsFromImage() async {
-    if (_selectedImage == null) return;
-
-    print('Selected Image Path: ${_selectedImage!.path}');
-
-    try {
-      final client = await clientViaServiceAccount(
-        ServiceAccountCredentials.fromJson(json.decode(
-          dotenv.env['GOOGLE_CLOUD_SERVICE_ACCOUNT_JSON']!,
-        )),
-        [VisionApi.cloudVisionScope],
-      );
-
-      final vision = VisionApi(client);
-
-      final imageBytes = await _selectedImage!.readAsBytes();
-
-      final response = await vision.images.annotate(
-        BatchAnnotateImagesRequest.fromJson({
-          'requests': [
-            {
-              'image': {
-                'content': base64Encode(imageBytes),
-              },
-              'features': [
-                {'type': 'TEXT_DETECTION'},
-                {'type': 'LABEL_DETECTION'}
-              ],
-            },
-          ],
-        }),
-      );
-
-      if (response.responses != null && response.responses!.isNotEmpty) {
-        // Process results for each image, assuming only one image is requested
-        final annotateImageResponse = response.responses![0];
-        final textAnnotations = annotateImageResponse.textAnnotations;
-        final labelAnnotations = annotateImageResponse.labelAnnotations;
-
-        // Process text annotations
-        if (textAnnotations != null && textAnnotations.isNotEmpty) {
-          final extractedText = textAnnotations[0].description;
-          if (extractedText != null && extractedText.isNotEmpty) {
-            setState(() {
-              _extractedText = extractedText;
-            });
-            print('Extracted Text: $extractedText');
-          }
-        }
-
-        // Process label annotations
-        if (labelAnnotations != null && labelAnnotations.isNotEmpty) {
-          final labels =
-              labelAnnotations.map((label) => label.description).toList();
-          setState(() {
-            _labels = labels;
-          });
-          print('Labels: $labels');
-
-          String tmp = _labels.where((label) => label != null).join(', ');
-          print('tmp: ' + tmp);
-          String str1 = await gptApi.getKeyword(tmp);
-          print('str1: ' + str1);
-          String str2 = await gptApi.getRecipe(str1);
-          print('str2: ' + str2);
-          String str3 = await gptApi.getAllergy(str2);
-          print('str3: ' + str3);
-        }
-      } else {
-        setState(() {
-          _extractedText = 'No text found';
-          _labels = [];
-        });
-      }
-    } catch (e, stackTrace) {
-      print('Error during Vision API request: $e');
-      print('Stack Trace: $stackTrace');
     }
   }
 
@@ -130,9 +55,6 @@ class _VisionApiExampleState extends State<VisionApiExample> {
           );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Google Vision API Example'),
-      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -140,23 +62,15 @@ class _VisionApiExampleState extends State<VisionApiExample> {
           extractedTextImage,
           SizedBox(height: 20),
           ElevatedButton(
-            onPressed: _selectImage,
-            child: Text('Select Image'),
+            onPressed: () async {
+              await _selectImage();
+            },
+            child: Text('음식 추가'),
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _extractTextAndLabelsFromImage,
-            child: Text('Extract Text and Labels'),
-          ),
           SizedBox(height: 20),
           Text(
-            'Extracted Text: $_extractedText',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Labels: ${_labels.join(', ')}', // 변경
+            '음식: ' + keyword, // 변경
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18),
           ),

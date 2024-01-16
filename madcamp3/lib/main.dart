@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/tab': (context) => const TabPage(),
         '/mypage': (context) => const ProfilePage(),
-        '/visionapi': (context) => VisionApiExample(),
+        // '/visionapi': (context) => VisionApiExample(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/edit': (context) => const EditInfoPage(),
