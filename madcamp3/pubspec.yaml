@@ -35,7 +35,12 @@ dependencies:
   google_sign_in: ^5.0.1
   flutter_naver_login: ^1.8.0
   kakao_flutter_sdk: ^1.8.0
-  flutter_naver_map: ^1.1.1
+  flutter_naver_map: ^1.1.2
+  geolocator: ^10.1.0
+  xml: ^6.5.0
+  geocoding: ^2.0.1
+  flutter_html: ^3.0.0-beta.2
+  html_unescape: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

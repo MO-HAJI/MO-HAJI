@@ -6,6 +6,15 @@
     <string>이 앱이 카메라에 접근하는 이유를 설명하는 메시지</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>이 앱이 사진에 접근하는 이유를 설명하는 메시지</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to location when in the background.</string>
+    <key>NSLocationTemporaryUsageDescriptionDictionary</key>
+    <dict>
+      <key>hxz7cc3je7</key>
+      <string>The example App requires temporary access to the device&apos;s precise location.</string>
+    </dict>
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>

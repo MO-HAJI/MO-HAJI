@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:madcamp3/screens/mypage.dart';
+import 'package:madcamp3/screens/naver.dart';
 
 import 'home.dart';
 
@@ -52,9 +53,10 @@ class _TabPageState extends State<TabPage> with SingleTickerProviderStateMixin {
             ]),
             body: TabBarView(
               controller: _tabController,
+              physics: NeverScrollableScrollPhysics(),
               children: [
                 VisionApiExample(),
-                Text("food"),
+                NaverAPI(),
                 mypage(),
               ],
             ),

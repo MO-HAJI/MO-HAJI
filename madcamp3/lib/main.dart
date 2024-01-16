@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:googleapis/vision/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:flutter/widgets.dart' as flutter;
@@ -19,6 +20,7 @@ void main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   KakaoSdk.init(nativeAppKey: 'd3f1e3967b70cf433b69a618fadbde6d');
+  await NaverMapSdk.instance.initialize(clientId: 'hxz7cc3je7');
   runApp(const MyApp());
 }
 
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: VisionApiExample(),
+      home: TabPage(),
       routes: {
         '/tab': (context) => const TabPage(),
         '/mypage': (context) => const mypage(),

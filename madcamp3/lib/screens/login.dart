@@ -11,6 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'util/login.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  KakaoSdk.init(nativeAppKey: 'd3f1e3967b70cf433b69a618fadbde6d');
+  runApp(const LoginPage());
+}
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 

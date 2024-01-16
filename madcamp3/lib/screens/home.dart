@@ -131,10 +131,6 @@ class _VisionApiExampleState extends State<VisionApiExample> {
             child: Text('Select Image'),
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _extractTextAndLabelsFromImage,
-            child: Text('Extract Text and Labels'),
-          ),
           SizedBox(height: 20),
           Text(
             'Extracted Text: $_extractedText',
