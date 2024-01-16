@@ -1,10 +1,12 @@
 import 'package:http/http.dart' as http;
 
 class APIImage {
-  static var client = http.Client();
+  // final baseUrl = "3.39.88.217:8000";
+
+  final baseUrl = "127.0.0.1:8000";
 
   Future<bool> uploadProfileImage(String? imageFile, String email) async {
-    var url = Uri.http("127.0.0.1:8000", "/api/s3/image-upload");
+    var url = Uri.http(baseUrl, "/api/s3/image-upload");
 
     // var s3Uri = Uri.parse("https://s3.ap-northeast-2.amazonaws.com");
 
@@ -28,11 +30,11 @@ class APIImage {
     }
   }
 
-  Future<String> getProfileImage(String email) async {
+  String getProfileImage(String image) {
     var url = Uri.http("");
     String image_url =
-        "https://madcamp3-image-bucket.s3.ap-northeast-2.amazonaws.com/";
-
+        "https://madcamp3-image-bucket.s3.ap-northeast-2.amazonaws.com/" +
+            image;
     return image_url;
   }
 }
