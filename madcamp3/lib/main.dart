@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:madcamp3/screens/bottom_navigation.dart';
 import 'package:madcamp3/screens/edit_info.dart';
@@ -12,6 +13,7 @@ void main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   KakaoSdk.init(nativeAppKey: 'd3f1e3967b70cf433b69a618fadbde6d');
+  await NaverMapSdk.instance.initialize(clientId: 'hxz7cc3je7');
   runApp(const MyApp());
 }
 
