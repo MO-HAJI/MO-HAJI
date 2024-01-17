@@ -102,4 +102,28 @@ class APIImage {
       return [];
     }
   }
+
+  Future<dynamic> deleteFoodImage(String id) async {
+    var url = Uri.http(baseUrl, "/api/s3/foodimage/" + id);
+
+    try {
+      final response = await delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${User.current.token}",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        print("Error deleting food image - ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 }

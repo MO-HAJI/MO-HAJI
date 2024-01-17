@@ -28,6 +28,8 @@ class _DashboardState extends State<Dashboard> {
   APIImage apiImage = APIImage();
   String? email;
 
+  List<FoodInfo> foodInfo = [];
+
   final List<String> images = []; // url
   final List<String> menu = []; // keyword
   final List<String> recipe = []; // recipe
@@ -50,7 +52,7 @@ class _DashboardState extends State<Dashboard> {
       email = checked_data['email'];
     });
 
-    List<FoodInfo> foodInfo = await apiImage.getFoodInfo(email!);
+    foodInfo = await apiImage.getFoodInfo(email!);
 
     setState(() {
       // Clear existing data in the lists
@@ -123,35 +125,87 @@ class _DashboardState extends State<Dashboard> {
         padding: const EdgeInsets.only(top: 50),
         child: Column(
           children: [
-            CarouselSlider(
-              items: [
-                ...generateImageTiles(),
-                // Add a custom item for the last page with an "Add Photo" button
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: Colors.grey[200], // You can customize the color
-                  ),
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await _selectImage();
-                      },
-                      child: Text('Add Photo'),
+            Stack(children: [
+              CarouselSlider(
+                items: [
+                  ...generateImageTiles(),
+                  // Add a custom item for the last page with an "Add Photo" button
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Colors.grey[200], // You can customize the color
+                    ),
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await _selectImage();
+                        },
+                        child: Text('Add Photo'),
+                      ),
                     ),
                   ),
+                ],
+                options: CarouselOptions(
+                  enlargeCenterPage: true,
+                  aspectRatio: 1.5,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  },
                 ),
-              ],
-              options: CarouselOptions(
-                enlargeCenterPage: true,
-                aspectRatio: 1.5,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
-                },
               ),
-            ),
+              // image delete button
+              if (_current < menu.length)
+                Positioned(
+                  top: 5,
+                  right: 40,
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50.0),
+                      color: Colors.black54, // You can customize the color
+                    ),
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
+                        iconSize: 15.0,
+                        onPressed: () async {
+                          // popup
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("음식 제거"),
+                                  content: Text("이미지를 삭제하시겠습니까?"),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("취소"),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text("삭제"),
+                                      onPressed: () async {
+                                        await apiImage.deleteFoodImage(
+                                            foodInfo[_current].id.toString());
+
+                                        await getDbData();
+
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        }),
+                  ),
+                ),
+            ]),
             if (_current <
                 menu.length) // Only show the text when not on the "Add Photo" button
               Center(
