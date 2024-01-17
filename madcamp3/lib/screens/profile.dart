@@ -125,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-          SizedBox(height: 100),
+          SizedBox(height: 80),
           CircleAvatar(
             radius: profileHeight / 1.5 + 3,
             backgroundColor: Colors.white,
@@ -159,11 +159,10 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: const EdgeInsets.all(32),
           child: Column(
             children: [
-              SizedBox(height: 100),
+              SizedBox(height: 70),
               _buildContent(),
               SizedBox(height: 50),
               _buildEditButton(),
-              SizedBox(height: 50),
             ],
           ),
         ),
@@ -182,7 +181,6 @@ class _ProfilePageState extends State<ProfilePage> {
               fontWeight: FontWeight.bold,
               color: Colors.black,
             )),
-        const SizedBox(height: 2),
         Text('${userEmail}',
             style: TextStyle(
               fontSize: 20,
@@ -196,7 +194,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildEditButton() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 48),
+      padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [

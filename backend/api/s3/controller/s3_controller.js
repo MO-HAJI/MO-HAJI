@@ -36,7 +36,25 @@ const getFoodImage = async (req, res) => {
     });
 };
 
+const deleteFoodImage = async (req, res) => {
+    const id = req.params.id;
+    console.log("id:", id);
+
+    db.query("DELETE FROM images WHERE id = ?", [id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(result);
+            return res.status(200).send({
+                result: 1,
+                message: "delete food image successfully",
+            });
+        }
+    });
+};
+
 module.exports = {
     uploadFile,
     getFoodImage,
+    deleteFoodImage,
 };
