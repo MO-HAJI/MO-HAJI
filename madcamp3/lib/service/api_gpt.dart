@@ -21,7 +21,7 @@ class GptApi {
               "model": "gpt-3.5-turbo-instruct",
               "prompt": '"' +
                   script +
-                  '" 이 중에서 한가지 메인 메뉴 하나만 한국어 단어로 줘. "밥", "국", "면", "반찬" 제외하고 메뉴이름으로 하나만 줘.',
+                  '" Please give me one keyword for this food. Just give me the korean menu name only. no explanation.',
               "max_tokens": 50,
               "temperature": 0,
               "top_p": 1,

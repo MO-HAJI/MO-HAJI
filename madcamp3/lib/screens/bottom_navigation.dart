@@ -3,7 +3,7 @@ import 'package:madcamp3/screens/profile.dart';
 import 'package:madcamp3/screens/recipe.dart';
 
 import 'food.dart';
-import 'naver.dart';
+import 'widgets/naver.dart';
 
 class TabPage extends StatefulWidget {
   final int initialTabIndex;
@@ -68,7 +68,7 @@ class _TabPageState extends State<TabPage> with SingleTickerProviderStateMixin {
             physics: NeverScrollableScrollPhysics(),
             children: [
               Dashboard(),
-              NaverAPI(),
+              Text("data"),
               ProfilePage(),
             ],
           ),
