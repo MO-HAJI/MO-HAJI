@@ -8,6 +8,8 @@ const {
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 
+const db = require("../../database");
+
 module.exports = {
     createUser: (req, res) => {
         const body = req.body;
@@ -130,5 +132,125 @@ module.exports = {
                 });
             }
         });
+    },
+
+    followUser: (req, res) => {
+        const body = req.body;
+        const email = body.email;
+        const follow_email = body.follow_email;
+        console.log("email:", email);
+        console.log("follow_email:", follow_email);
+        db.query(
+            "INSERT INTO friends (user, follow) VALUES(?,?)",
+            [email, follow_email],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(result);
+                    return res.status(200).send({
+                        result: 1,
+                        message: "follow user successfully",
+                    });
+                }
+            }
+        );
+    },
+
+    unfollowUser: (req, res) => {
+        const body = req.body;
+        const email = body.email;
+        const follow_email = body.follow_email;
+        console.log("email:", email);
+        console.log("follow_email:", follow_email);
+        db.query(
+            "DELETE FROM friends WHERE user = ? AND follow = ?",
+            [email, follow_email],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(result);
+                    return res.status(200).send({
+                        result: 1,
+                        message: "unfollow user successfully",
+                    });
+                }
+            }
+        );
+    },
+
+    getFollowers: (req, res) => {
+        const email = req.params.email;
+        console.log("Email:", email);
+
+        db.query(
+            "SELECT * FROM users WHERE email IN (SELECT user FROM friends WHERE follow = ?)",
+            [email],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(result);
+                    return res.status(200).send({
+                        result: 1,
+                        message: "get followers successfully",
+                        data: result,
+                    });
+                }
+            }
+        );
+    },
+
+    getFollowings: (req, res) => {
+        const email = req.params.email;
+        console.log("Email:", email);
+
+        db.query(
+            "SELECT * FROM users WHERE email IN (SELECT follow FROM friends WHERE user = ?)",
+            [email],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(result);
+                    return res.status(200).send({
+                        result: 1,
+                        message: "get followings successfully",
+                        data: result,
+                    });
+                }
+            }
+        );
+    },
+
+    checkFollowing: (req, res) => {
+        const body = req.body;
+        const email = body.email;
+        const target_email = body.target_email;
+        console.log("email:", email);
+        console.log("target_email:", target_email);
+        db.query(
+            "SELECT * FROM friends WHERE user = ? AND follow = ?",
+            [email, target_email],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(result);
+                    if (result.length == 0) {
+                        return res.status(200).send({
+                            result: 0,
+                            message: "not following",
+                        });
+                    } else {
+                        return res.status(200).send({
+                            result: 1,
+                            message: "following",
+                        });
+                    }
+                }
+            }
+        );
     },
 };

@@ -6,6 +6,8 @@ import 'package:madcamp3/screens/bottom_navigation.dart';
 import 'package:madcamp3/screens/edit_info.dart';
 import 'package:madcamp3/screens/profile.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:madcamp3/screens/widgets/follower.dart';
+import 'package:madcamp3/screens/widgets/following.dart';
 
 import 'screens/login.dart';
 import 'screens/signup.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/edit': (context) => const EditInfoPage(),
+        '/following': (context) => const FollowingPage(),
+        '/follower': (context) => const FollowerPage(),
       },
     );
   }

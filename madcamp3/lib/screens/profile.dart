@@ -34,6 +34,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Network network = Network();
   APIImage apiImage = APIImage();
 
+  int followingCount = 0;
+  int followerCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +64,14 @@ class _ProfilePageState extends State<ProfilePage> {
       userEmail = checked_data['email'];
       userPassword = checked_data['password'];
       userImage = checked_data['profile_image'];
+    });
+
+    var follower = await network.getFollowers(userEmail);
+    var following = await network.getFollowings(userEmail);
+
+    setState(() {
+      followerCount = follower.length;
+      followingCount = following.length;
     });
   }
 
@@ -161,6 +172,8 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               SizedBox(height: 70),
               _buildContent(),
+              SizedBox(height: 10),
+              _buildFollow(),
               SizedBox(height: 50),
               _buildEditButton(),
             ],
@@ -214,4 +227,48 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  Widget _buildFollow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        buildButton(text: 'Following', value: followingCount),
+        SizedBox(width: 8),
+        buildDivider(),
+        SizedBox(width: 8),
+        buildButton(text: 'Followers', value: followerCount),
+      ],
+    );
+  }
+
+  Widget buildButton({required String text, required int value}) =>
+      MaterialButton(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        onPressed: () {
+          text == 'Following'
+              ? Navigator.pushNamed(context, '/following')
+              : Navigator.pushNamed(context, '/follower');
+        },
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              '$value',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            ),
+            SizedBox(height: 2),
+            Text(
+              text,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ],
+        ),
+      );
+
+  Widget buildDivider() => Container(
+        height: 24,
+        child: VerticalDivider(),
+      );
 }

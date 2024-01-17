@@ -139,18 +139,19 @@ class Network {
     }
   }
 
-  Future<Map<String, dynamic>> followUser(String userEmail, String followEmail) async {
+  Future<dynamic> followUser(String userEmail, String followEmail) async {
     var url = Uri.parse(baseUrl + '/follow');
     try {
       final response = await post(
         url,
         body: jsonEncode({
-          'user': userEmail,
-          'follow': followEmail,
+          'email': userEmail,
+          'follow_email': followEmail,
         }),
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer ${User.current.token}", // Corrected the syntax here
+          "Authorization":
+              "Bearer ${User.current.token}", // Corrected the syntax here
         },
       );
 
@@ -164,6 +165,129 @@ class Network {
     } catch (e) {
       print(e);
       return {'error': 'Failed to follow user'};
+    }
+  }
+
+  Future<dynamic> unfollowUser(String userEmail, String followEmail) async {
+    var url = Uri.parse(baseUrl + '/unfollow');
+    try {
+      final response = await post(
+        url,
+        body: jsonEncode({
+          'email': userEmail,
+          'follow_email': followEmail,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+              "Bearer ${User.current.token}", // Corrected the syntax here
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var userJson = response.body;
+        return jsonDecode(userJson);
+      } else {
+        print('Failed to unfollow user. Status code: ${response.statusCode}');
+        return {'error': 'Failed to unfollow user'};
+      }
+    } catch (e) {
+      print(e);
+      return {'error': 'Failed to unfollow user'};
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getFollowers(String userEmail) async {
+    var url = Uri.parse(baseUrl + '/followers/' + userEmail);
+    try {
+      final response = await get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${User.current.token}"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var userJson = response.body;
+        var parsingData = jsonDecode(userJson);
+        // Make sure 'data' is a List<Map<String, dynamic>>
+        if (parsingData['data'] is List) {
+          return List<Map<String, dynamic>>.from(parsingData['data']);
+        } else {
+          // Handle the case when 'data' is not a List
+          print('Unexpected response format: ${parsingData['data']}');
+          return [];
+        }
+      } else {
+        print('Failed to fetch users. Status code: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  Future<dynamic> getFollowings(String userEmail) async {
+    var url = Uri.parse(baseUrl + '/followings/' + userEmail);
+    try {
+      final response = await get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${User.current.token}"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var userJson = response.body;
+        var parsingData = jsonDecode(userJson);
+        // Make sure 'data' is a List<Map<String, dynamic>>
+        if (parsingData['data'] is List) {
+          return List<Map<String, dynamic>>.from(parsingData['data']);
+        } else {
+          // Handle the case when 'data' is not a List
+          print('Unexpected response format: ${parsingData['data']}');
+          return [];
+        }
+      } else {
+        print('Failed to fetch users. Status code: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  Future<int> checkIfFollowing(String userEmail, String targetEmail) async {
+    var url = Uri.parse(baseUrl + '/checkfollowing');
+    try {
+      final response = await post(
+        url,
+        body: jsonEncode({
+          'email': userEmail,
+          'target_email': targetEmail,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+              "Bearer ${User.current.token}", // Corrected the syntax here
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var userJson = response.body;
+        return jsonDecode(userJson)['result'];
+      } else {
+        print(
+            'Failed to check if following. Status code: ${response.statusCode}');
+        return -1;
+      }
+    } catch (e) {
+      print(e);
+      return -1;
     }
   }
 }
