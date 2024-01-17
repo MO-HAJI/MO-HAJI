@@ -185,7 +185,7 @@ module.exports = {
         console.log("Email:", email);
 
         db.query(
-            "SELECT * FROM friends WHERE follow = ?",
+            "SELECT * FROM users WHERE email IN (SELECT user FROM friends WHERE follow = ?)",
             [email],
             (err, result) => {
                 if (err) {
@@ -207,7 +207,7 @@ module.exports = {
         console.log("Email:", email);
 
         db.query(
-            "SELECT * FROM friends WHERE user = ?",
+            "SELECT * FROM users WHERE email IN (SELECT follow FROM friends WHERE user = ?)",
             [email],
             (err, result) => {
                 if (err) {
