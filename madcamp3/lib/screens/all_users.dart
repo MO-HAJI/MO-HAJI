@@ -35,41 +35,72 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: allUsers.length,
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // Two columns
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+        ),
+        itemCount: allUsers.length - 1,
         itemBuilder: (context, index) {
           Map<String, dynamic> user = allUsers[index];
           String profileImage = user['profile_image'] ?? '';
 
-          bool isCurrentUser = user['email'] == User.current.email;
+          allUsers.removeWhere((user) => user['email'] == User.current.email);
 
-          return isCurrentUser
-              ? SizedBox.shrink()
-              : ListTile(
-                  title: Text(user['name'] ?? ''),
-                  subtitle: Text(user['email'] ?? ''),
-                  leading: CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(apiImage.getImage(profileImage) ?? ''),
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              border: Border.all(color: Colors.grey),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Circular profile picture
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: CircleAvatar(
+                      radius: 40.0,
+                      backgroundImage: user['profile_image'] != null
+                          ? NetworkImage(apiImage.getImage(profileImage) ?? '')
+                          : Image.asset('assets/images/default_profile.png')
+                              .image,
+                    ),
                   ),
-                  trailing: FollowButton(
-                    userEmail: User.current.email,
-                    targetUserEmail: user['email'],
-                    onFollowComplete: () {
-                      // Reload the user list after following/unfollowing
-                      fetchAllUsers();
-                    },
+                  SizedBox(height: 8.0), // Spacer between picture and text
+                  // Texts and Follow Button
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          user['name'] ?? '',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(user['email'] ?? ''),
+                        SizedBox(height: 8.0),
+                        Center(
+                          child: FollowButton(
+                            userEmail: User.current.email,
+                            targetUserEmail: user['email'],
+                            onFollowComplete: () {
+                              // Reload the user list after following/unfollowing
+                              fetchAllUsers();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            other_user_food(userEmail: user['email']),
-                      ),
-                    );
-                  },
-                );
+                ],
+              ),
+            ),
+          );
         },
       ),
     );

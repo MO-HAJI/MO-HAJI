@@ -256,7 +256,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildButton({required String text, required int value}) =>
       MaterialButton(
         padding: EdgeInsets.symmetric(vertical: 4),
-        onPressed: () {},
+        onPressed: () {
+          text == 'Following'
+              ? Navigator.pushNamed(context, '/following')
+              : Navigator.pushNamed(context, '/follower');
+        },
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         child: Column(
           mainAxisSize: MainAxisSize.min,
