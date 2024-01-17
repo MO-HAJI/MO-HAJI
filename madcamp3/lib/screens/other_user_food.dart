@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart' as image_picker;
 import 'package:intl/intl.dart';
 import 'package:madcamp3/models/food.dart';
 import 'package:madcamp3/screens/widgets/foodInfo.dart';
+import 'package:madcamp3/screens/widgets/naver.dart';
 
 import '../service/api_google_vision.dart';
 import '../service/api_gpt.dart';
@@ -29,11 +30,15 @@ class _other_user_foodState extends State<other_user_food> {
   GptApi gptApi = GptApi();
   APIImage apiImage = APIImage();
   String? email;
+  String? userName;
 
   final List<String> images = []; // url
   final List<String> menu = []; // keyword
   final List<String> recipe = []; // recipe
   final List<String> allergy = []; // allergy
+
+  bool showRecipe = true;
+  bool showMap = false;
 
   @override
   void initState() {
@@ -50,6 +55,7 @@ class _other_user_foodState extends State<other_user_food> {
 
     setState(() {
       email = checked_data['email'];
+      userName = checked_data['name'];
     });
 
     List<FoodInfo> foodInfo = await apiImage.getFoodInfo(email!);
@@ -89,8 +95,18 @@ class _other_user_foodState extends State<other_user_food> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          "$userName님의 게시물",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Container(
-        padding: const EdgeInsets.only(top: 50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center, // Center vertically
           children: [
@@ -118,7 +134,7 @@ class _other_user_foodState extends State<other_user_food> {
                   ),
                 ),
               ),
-            if (_current < menu.length)
+            if (menu.length > 0) // Check if menu.length is greater than 0
               Center(
                 child: Text(
                   menu[_current].replaceAll("\"", ""),
@@ -130,11 +146,64 @@ class _other_user_foodState extends State<other_user_food> {
                   ),
                 ),
               ),
+            if (menu.length > 0) // Check if menu.length is greater than 0
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    showRecipe ? '메뉴 정보' : '주변 맛집',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 150),
+                  // Toggle button for Recipe
+                  ToggleButtons(
+                    children: [
+                      Icon(Icons
+                          .food_bank), // You can replace this with your own icon
+                    ],
+                    isSelected: [showRecipe],
+                    onPressed: (int index) {
+                      setState(() {
+                        showRecipe = !showRecipe;
+                        showMap =
+                        !showRecipe; // Ensure only one option is selected at a time
+                      });
+                    },
+                  ),
+                  // Adjust spacing between buttons
+                  // Toggle button for Map
+                  ToggleButtons(
+                    children: [
+                      Icon(
+                          Icons.map), // You can replace this with your own icon
+                    ],
+                    isSelected: [showMap],
+                    onPressed: (int index) {
+                      setState(() {
+                        showMap = !showMap;
+                        showRecipe =
+                        !showMap; // Ensure only one option is selected at a time
+                      });
+                    },
+                  ),
+                ],
+              ),
             if (_current < menu.length)
               Expanded(
-                child: FoodInfoWidget(
+                child: showRecipe
+                    ? FoodInfoWidget(
                   recipe: recipe[_current],
                   allergy: allergy[_current],
+                  // GPTmenu: menu[_current].replaceAll("\"", ""),
+                )
+                    :
+                Container(
+                  margin: EdgeInsets.only(top: 10), // Adjust the top margin as needed
+                  child: NaverAPI(GPTmenu: menu[_current].replaceAll("\"", "")),
                 ),
               ),
           ],

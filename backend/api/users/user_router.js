@@ -18,6 +18,7 @@ const {
   getUsers,
   updateUser,
   login,
+  followUser,
 } = require("./user_controller");
 
 const router = require("express").Router();
@@ -30,6 +31,7 @@ router.get("/", checkToken, getUsers);
 router.get("/:email", checkToken, getUserByUserEmail);
 router.put("/", checkToken, updateUser);
 router.post("/login", login);
+router.post("/follow", followUser);
 
 
 module.exports = router;
