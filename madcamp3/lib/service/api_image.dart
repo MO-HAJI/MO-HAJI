@@ -8,9 +8,9 @@ import 'package:http/http.dart' as http;
 import 'api_gpt.dart';
 
 class APIImage {
-  // final baseUrl = "3.39.88.217:8000";
+  final baseUrl = "3.39.88.217:8000";
 
-  final baseUrl = "127.0.0.1:8000";
+  // final baseUrl = "127.0.0.1:8000";
 
   GptApi gptApi = GptApi();
 
@@ -100,6 +100,30 @@ class APIImage {
     } catch (e) {
       print(e);
       return [];
+    }
+  }
+
+  Future<dynamic> deleteFoodImage(String id) async {
+    var url = Uri.http(baseUrl, "/api/s3/foodimage/" + id);
+
+    try {
+      final response = await delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${User.current.token}",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        print("Error deleting food image - ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 }

@@ -25,10 +25,12 @@ class NaverAPI extends StatefulWidget {
 
 class _NaverAPIState extends State<NaverAPI> {
   late NaverMapController mapController;
-  late NCameraPosition initialCameraPosition = NCameraPosition(
-    target: NLatLng(36.372935, 127.357785),
-    zoom: 12.5,
-  );
+  // late NCameraPosition initialCameraPosition = NCameraPosition(
+  //   target: NLatLng(36.372935, 127.357785),
+  //   zoom: 12.5,
+  // );
+
+  late NCameraPosition initialCameraPosition;
   late List<NMarker> markers = [];
   final HtmlUnescape htmlUnescape = HtmlUnescape();
 
