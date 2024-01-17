@@ -8,6 +8,8 @@ const {
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 
+const db = require("../../database");
+
 module.exports = {
     createUser: (req, res) => {
         const body = req.body;
