@@ -26,7 +26,7 @@ class _FollowerPageState extends State<FollowerPage> {
 
   Future<void> fetchAllUsers() async {
     try {
-      List<Map<String, dynamic>> users = await network
+      var users = await network
           .getFollowers(User.current.email); // Use getFollowers method
       setState(() {
         followers = users;

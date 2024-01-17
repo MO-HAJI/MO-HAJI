@@ -13,7 +13,7 @@ class FollowingPage extends StatefulWidget {
 }
 
 class _FollowingPageState extends State<FollowingPage> {
-  List<Map<String, dynamic>> allUsers = [];
+  List<Map<String, dynamic>> followings = [];
 
   Network network = Network();
   APIImage apiImage = APIImage();
@@ -26,9 +26,10 @@ class _FollowingPageState extends State<FollowingPage> {
 
   Future<void> fetchAllUsers() async {
     try {
-      List<Map<String, dynamic>> users = await network.allMember();
+      var users = await network
+          .getFollowings(User.current.email); // Use getFollowings method
       setState(() {
-        allUsers = users;
+        followings = users;
       });
     } catch (e) {
       print(e);
@@ -65,9 +66,9 @@ class _FollowingPageState extends State<FollowingPage> {
         title: Text('Followings'),
       ),
       body: ListView.builder(
-        itemCount: allUsers.length,
+        itemCount: followings.length,
         itemBuilder: (context, index) {
-          Map<String, dynamic> user = allUsers[index];
+          Map<String, dynamic> user = followings[index];
           String profileImage = user['profile_image'] ?? '';
 
           // Check if the current user is the logged-in user
