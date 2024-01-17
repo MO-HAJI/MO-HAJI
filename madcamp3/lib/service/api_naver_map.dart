@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-class NaverMapApi{
+class NaverMapApi {
   late NaverMapController mapController;
   BuildContext context; // Add a member variable for context
   NaverMapApi(this.context); // Constructor to initialize context
@@ -21,7 +21,7 @@ class NaverMapApi{
   late List<NMarker> markers = [];
   final HtmlUnescape htmlUnescape = HtmlUnescape();
 
-  final String GPTmenu = "돈까스";
+  // final String GPTmenu = "돈까스";
 
   Map<String, String> translationMap = {
     'Daejeon': '대전',
@@ -33,16 +33,19 @@ class NaverMapApi{
     return translationMap[term] ?? term;
   }
 
-  void determineLocation() async {
+  void determineLocation(String GPTmenu) async {
     try {
       // Reverse geocoding to get the address
       List<Placemark> placemarks =
-      await placemarkFromCoordinates(36.3742, 127.3661);
+          await placemarkFromCoordinates(36.3742, 127.3661);
       if (placemarks.isNotEmpty) {
         Placemark firstPlacemark = placemarks.first;
-        String city = translateToKorean(firstPlacemark.subAdministrativeArea) ?? "";
-        String district = translateToKorean(firstPlacemark.administrativeArea) ?? "";
-        String thoroughfare = translateToKorean(firstPlacemark.thoroughfare) ?? "";
+        String city =
+            translateToKorean(firstPlacemark.subAdministrativeArea) ?? "";
+        String district =
+            translateToKorean(firstPlacemark.administrativeArea) ?? "";
+        String thoroughfare =
+            translateToKorean(firstPlacemark.thoroughfare) ?? "";
 
         String addressDetails = "$city $district $thoroughfare";
         print("Current Address Details: $addressDetails");
@@ -130,7 +133,7 @@ class NaverMapApi{
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Html(
                             data:
-                            '<div style="font-size: 18px; font-weight: bold;">$name</div>',
+                                '<div style="font-size: 18px; font-weight: bold;">$name</div>',
                           ),
                         ),
                         ListTile(

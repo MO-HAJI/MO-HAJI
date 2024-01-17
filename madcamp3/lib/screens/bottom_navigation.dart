@@ -3,8 +3,7 @@ import 'package:madcamp3/screens/profile.dart';
 import 'package:madcamp3/screens/recipe.dart';
 
 import 'food.dart';
-import 'naver.dart';
-import 'all_users.dart';
+import 'widgets/naver.dart';
 
 class TabPage extends StatefulWidget {
   final int initialTabIndex;
@@ -32,37 +31,49 @@ class _TabPageState extends State<TabPage> with SingleTickerProviderStateMixin {
     final imageSize = MediaQuery.of(context).size.width / 3;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('InfoSynth'),
-      //   automaticallyImplyLeading: false,
-      // ),
       body: DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            bottomNavigationBar: TabBar(controller: _tabController, tabs: [
-              Tab(
-                icon: Icon(Icons.home),
-                text: 'home',
-              ),
-              Tab(
-                icon: Icon(Icons.fastfood),
-                text: 'food',
-              ),
-              Tab(
-                icon: Icon(Icons.people),
-                text: 'my',
-              )
-            ]),
-            body: TabBarView(
-              controller: _tabController,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                AllUsersScreen(),
-                NaverAPI(),
-                ProfilePage(),
-              ],
+        length: 3,
+        child: Scaffold(
+          bottomNavigationBar: Theme(
+            data: Theme.of(context).copyWith(
+              // Set the background color of the bottom navigation bar
+              canvasColor: Colors.blue,
+              // Set the active and inactive colors of the icon and text
+              primaryColor: Colors.white,
+              textTheme: Theme.of(context).textTheme.copyWith(
+                    caption: TextStyle(color: Colors.grey),
+                  ),
             ),
-          )),
+            child: TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.home),
+                  text: 'Home',
+                ),
+                Tab(
+                  icon: Icon(Icons.fastfood),
+                  text: 'Food',
+                ),
+                Tab(
+                  icon: Icon(Icons.people),
+                  text: 'My',
+                ),
+              ],
+              indicatorColor: Colors.white,
+            ),
+          ),
+          body: TabBarView(
+            controller: _tabController,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              Dashboard(),
+              Text("data"),
+              ProfilePage(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

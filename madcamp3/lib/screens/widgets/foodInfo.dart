@@ -2,11 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../service/api_image.dart';
+import 'naver.dart';
 
 class FoodInfoWidget extends StatelessWidget {
   final String recipe;
   final String allergy;
+  // String GPTmenu;
   APIImage apiImage = APIImage();
+
+  // FoodInfoWidget(
+  //     {required this.recipe, required this.allergy, required this.GPTmenu});
 
   FoodInfoWidget({required this.recipe, required this.allergy});
 

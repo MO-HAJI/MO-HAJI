@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart' as image_picker;
-import 'package:intl/intl.dart';
 import 'package:madcamp3/models/food.dart';
 import 'package:madcamp3/screens/widgets/foodInfo.dart';
 
@@ -13,6 +12,7 @@ import '../service/api_gpt.dart';
 import '../service/api_image.dart';
 import '../models/user.dart';
 import '../service/network.dart';
+import 'widgets/naver.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -34,6 +34,9 @@ class _DashboardState extends State<Dashboard> {
   final List<String> menu = []; // keyword
   final List<String> recipe = []; // recipe
   final List<String> allergy = []; // allergy
+
+  bool showRecipe = true;
+  bool showMap = false;
 
   @override
   void initState() {
@@ -124,7 +127,7 @@ class _DashboardState extends State<Dashboard> {
       body: Container(
         padding: const EdgeInsets.only(top: 50),
         child: Column(
-          children: [
+          children: <Widget>[
             Stack(children: [
               CarouselSlider(
                 items: [
@@ -196,6 +199,10 @@ class _DashboardState extends State<Dashboard> {
 
                                         await getDbData();
 
+                                        setState(() {
+                                          _current = 0;
+                                        });
+
                                         Navigator.pop(context);
                                       },
                                     ),
@@ -220,11 +227,51 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
             if (_current < menu.length)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Toggle button for Recipe
+                  ToggleButtons(
+                    children: [
+                      Icon(Icons
+                          .food_bank), // You can replace this with your own icon
+                    ],
+                    isSelected: [showRecipe],
+                    onPressed: (int index) {
+                      setState(() {
+                        showRecipe = !showRecipe;
+                        showMap =
+                            !showRecipe; // Ensure only one option is selected at a time
+                      });
+                    },
+                  ),
+                  SizedBox(width: 16), // Adjust spacing between buttons
+                  // Toggle button for Map
+                  ToggleButtons(
+                    children: [
+                      Icon(
+                          Icons.map), // You can replace this with your own icon
+                    ],
+                    isSelected: [showMap],
+                    onPressed: (int index) {
+                      setState(() {
+                        showMap = !showMap;
+                        showRecipe =
+                            !showMap; // Ensure only one option is selected at a time
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (_current < menu.length)
               Expanded(
-                child: FoodInfoWidget(
-                  recipe: recipe[_current],
-                  allergy: allergy[_current],
-                ),
+                child: showRecipe
+                    ? FoodInfoWidget(
+                        recipe: recipe[_current],
+                        allergy: allergy[_current],
+                        // GPTmenu: menu[_current].replaceAll("\"", ""),
+                      )
+                    : NaverAPI(GPTmenu: menu[_current].replaceAll("\"", "")),
               ),
           ],
         ),

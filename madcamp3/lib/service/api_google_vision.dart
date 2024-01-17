@@ -28,8 +28,7 @@ class VisonApi {
                 'content': base64Encode(imageBytes),
               },
               'features': [
-                {'type': 'TEXT_DETECTION'},
-                {'type': 'LABEL_DETECTION'}
+                {"maxResults": 10, 'type': 'LABEL_DETECTION'}
               ],
             },
           ],
