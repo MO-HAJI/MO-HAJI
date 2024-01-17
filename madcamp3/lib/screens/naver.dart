@@ -1,14 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
-import 'package:html_unescape/html_unescape.dart';
-import 'package:flutter_html/flutter_html.dart';
 import '../service/api_naver_map.dart';
 
 void main() async {
@@ -34,13 +26,9 @@ class _NaverAPIState extends State<NaverAPI> {
     navermapAPI.determineLocation();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Naver Map Example'),
-      ),
       body: NaverMap(
         options: NaverMapViewOptions(
           initialCameraPosition: navermapAPI.initialCameraPosition,
@@ -54,7 +42,8 @@ class _NaverAPIState extends State<NaverAPI> {
   Future<void> onMapReady(NaverMapController controller) async {
     navermapAPI.mapController = controller;
     navermapAPI.determineLocation();
-    NLocationOverlay locationOverlay = await navermapAPI.mapController.getLocationOverlay();
+    NLocationOverlay locationOverlay =
+        await navermapAPI.mapController.getLocationOverlay();
     locationOverlay.setIsVisible(true);
   }
 
