@@ -11,10 +11,8 @@
   <component name="ChangeListManager">
     <list default="true" id="7b479f77-b711-4ac8-b9b1-a19b10266a34" name="Changes" comment="아무거나">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/users/user_router.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/users/user_router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/madcamp3/lib/screens/food.dart" beforeDir="false" afterPath="$PROJECT_DIR$/madcamp3/lib/screens/food.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/madcamp3/lib/screens/other_user_food.dart" beforeDir="false" afterPath="$PROJECT_DIR$/madcamp3/lib/screens/other_user_food.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/madcamp3/lib/screens/widgets/foodInfo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/madcamp3/lib/screens/widgets/foodInfo.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/madcamp3/lib/screens/all_users.dart" beforeDir="false" afterPath="$PROJECT_DIR$/madcamp3/lib/screens/all_users.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/madcamp3/lib/screens/profile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/madcamp3/lib/screens/profile.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

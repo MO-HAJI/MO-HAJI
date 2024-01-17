@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
           body: Stack(
             children: [
               Positioned(bottom: -5, child: _buildBottom()),
-              Positioned(top: 50, child: _buildTop()),
+              Positioned(top: 30, child: _buildTop()),
             ],
           ),
         ));
@@ -168,16 +168,17 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(32),
-          child: Column(
-            children: [
-              SizedBox(height: 70),
-              _buildContent(),
-              SizedBox(height: 10),
-              _buildFollow(),
-              SizedBox(height: 50),
-              _buildEditButton(),
-            ],
-          ),
+            child: Column(
+              children: [
+                SizedBox(height: 60),
+                _buildContent(),
+                SizedBox(height: 5),
+                _buildFollow(),
+                SizedBox(height: 10),
+                _buildEditButton(),
+]
+            ),
+
         ),
       ),
     );

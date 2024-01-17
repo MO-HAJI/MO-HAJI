@@ -41,63 +41,72 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
           crossAxisSpacing: 8.0,
           mainAxisSpacing: 8.0,
         ),
-        itemCount: allUsers.length - 1,
+        itemCount: allUsers.length,
         itemBuilder: (context, index) {
           Map<String, dynamic> user = allUsers[index];
           String profileImage = user['profile_image'] ?? '';
 
-          allUsers.removeWhere((user) => user['email'] == User.current.email);
-
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              border: Border.all(color: Colors.grey),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Circular profile picture
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: CircleAvatar(
-                      radius: 40.0,
-                      backgroundImage: user['profile_image'] != null
-                          ? NetworkImage(apiImage.getImage(profileImage) ?? '')
-                          : Image.asset('assets/images/default_profile.png')
-                              .image,
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      other_user_food(userEmail: user['email']),
+                ),
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.0),
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Circular profile picture
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: CircleAvatar(
+                        radius: 30.0,
+                        backgroundImage: user['profile_image'] != null
+                            ? NetworkImage(apiImage.getImage(profileImage) ?? '')
+                            : Image.asset('assets/images/default_profile.png').image,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8.0), // Spacer between picture and text
-                  // Texts and Follow Button
-                  Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          user['name'] ?? '',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    SizedBox(height: 2.0), // Spacer between picture and text
+                    // Texts and Follow Button
+                    Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            user['name'] ?? '',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(user['email'] ?? ''),
-                        SizedBox(height: 8.0),
-                        Center(
-                          child: FollowButton(
-                            userEmail: User.current.email,
-                            targetUserEmail: user['email'],
-                            onFollowComplete: () {
-                              // Reload the user list after following/unfollowing
-                              fetchAllUsers();
-                            },
+                          Text(user['email'] ?? ''),
+                          SizedBox(height: 2.0),
+                          Center(
+                            child: FollowButton(
+                              userEmail: User.current.email,
+                              targetUserEmail: user['email'],
+                              onFollowComplete: () {
+                                // Reload the user list after following/unfollowing
+                                fetchAllUsers();
+                              },
+                            ),
+                            // Remove onTap from here, as it's handled by GestureDetector
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
