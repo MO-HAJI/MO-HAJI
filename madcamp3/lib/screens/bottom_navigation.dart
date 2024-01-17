@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:madcamp3/screens/profile.dart';
 import 'package:madcamp3/screens/recipe.dart';
 
+import 'all_users.dart';
 import 'food.dart';
 import 'widgets/naver.dart';
 
@@ -67,8 +68,8 @@ class _TabPageState extends State<TabPage> with SingleTickerProviderStateMixin {
             controller: _tabController,
             physics: NeverScrollableScrollPhysics(),
             children: [
+              AllUsersScreen(),
               Dashboard(),
-              Text("data"),
               ProfilePage(),
             ],
           ),
