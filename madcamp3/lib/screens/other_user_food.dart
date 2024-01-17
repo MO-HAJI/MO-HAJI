@@ -14,14 +14,16 @@ import '../service/api_image.dart';
 import '../models/user.dart';
 import '../service/network.dart';
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+class other_user_food extends StatefulWidget {
+  final String? userEmail;
+
+  const other_user_food({Key? key, this.userEmail}) : super(key: key);
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<other_user_food> createState() => _other_user_foodState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _other_user_foodState extends State<other_user_food> {
   int _current = 0;
   VisonApi visionApi = VisonApi();
   GptApi gptApi = GptApi();
@@ -42,7 +44,7 @@ class _DashboardState extends State<Dashboard> {
   getDbData() async {
     Network network = Network();
     Map<String, String> check = {
-      "email": User.current.email,
+      "email": widget.userEmail ?? "", // Use widget.userEmail here
     };
     var checked_data = await network.checkMemberByEmail(check);
 
@@ -69,38 +71,6 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  Future<void> _selectImage() async {
-    final image_picker.ImagePicker picker = image_picker.ImagePicker();
-    final image_picker.XFile? pickedFile =
-        await picker.pickImage(source: image_picker.ImageSource.gallery);
-
-    // loading circle
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Center(child: CircularProgressIndicator());
-        });
-
-    if (pickedFile != null) {
-      final String? extractedScript =
-          await visionApi.extractLabels(File(pickedFile.path));
-      final String keyword = await gptApi.getKeyword(extractedScript!);
-
-      XFile? _selectedImage = XFile(pickedFile.path);
-      String? imagePath = _selectedImage?.path;
-
-      await apiImage.uploadFoodImage(imagePath, email!, keyword);
-      await getDbData();
-
-      setState(() {
-        _current = images.length - 1;
-      });
-
-      // remove loading circle
-      Navigator.pop(context);
-    }
-  }
-
   List<Widget> generateImageTiles() {
     return images.map((element) {
       return ClipRRect(
@@ -122,38 +92,33 @@ class _DashboardState extends State<Dashboard> {
       body: Container(
         padding: const EdgeInsets.only(top: 50),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // Center vertically
           children: [
-            CarouselSlider(
-              items: [
-                ...generateImageTiles(),
-                // Add a custom item for the last page with an "Add Photo" button
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: Colors.grey[200], // You can customize the color
-                  ),
-                  child: Center(
-                      child: ElevatedButton(
-                      onPressed: () async {
-                        await _selectImage();
-                      },
-                      child: Text('Add Photo'),
-                    ),
+            if (menu.length > 0)
+              CarouselSlider(
+                items: generateImageTiles(),
+                options: CarouselOptions(
+                  enlargeCenterPage: true,
+                  aspectRatio: 1.5,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  },
+                  enableInfiniteScroll: menu.length > 1,
+                ),
+              ),
+            if (menu.length == 0)
+              Center(
+                child: Text(
+                  "등록된 게시물이 없어요.",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
-              options: CarouselOptions(
-                enlargeCenterPage: true,
-                aspectRatio: 1.5,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
-                },
               ),
-            ),
-            if (_current <
-                menu.length) // Only show the text when not on the "Add Photo" button
+            if (_current < menu.length)
               Center(
                 child: Text(
                   menu[_current].replaceAll("\"", ""),

@@ -34,7 +34,6 @@ class _NaverAPIState extends State<NaverAPI> {
     navermapAPI.determineLocation();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
