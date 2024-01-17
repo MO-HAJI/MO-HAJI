@@ -57,14 +57,12 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('All Users'),
-      ),
       body: ListView.builder(
         itemCount: allUsers.length,
         itemBuilder: (context, index) {
           Map<String, dynamic> user = allUsers[index];
-          String profileImage = user['profile_image'] ?? ''; // Default to an empty string if null
+          String profileImage =
+              user['profile_image'] ?? ''; // Default to an empty string if null
 
           // Check if the current user is the logged-in user
           bool isCurrentUser = user['email'] == User.current.email;
@@ -72,31 +70,32 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
           return isCurrentUser
               ? SizedBox.shrink() // If it's the current user, hide the item
               : ListTile(
-            title: Text(user['name'] ?? ''),
-            subtitle: Text(user['email'] ?? ''),
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(apiImage.getImage(profileImage) ?? ''),
-            ),
-            trailing: ElevatedButton(
-              onPressed: () {
-                // Call the followUser function when the Follow button is pressed
-                followUser(user['email']);
-              },
-              child: Text('Follow'),
-            ),
-            onTap: () {
-              // Navigate to other_user_food screen when a user is tapped
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => other_user_food(userEmail: user['email']),
-                ),
-              );
-            },
-          );
+                  title: Text(user['name'] ?? ''),
+                  subtitle: Text(user['email'] ?? ''),
+                  leading: CircleAvatar(
+                    backgroundImage:
+                        NetworkImage(apiImage.getImage(profileImage) ?? ''),
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () {
+                      // Call the followUser function when the Follow button is pressed
+                      followUser(user['email']);
+                    },
+                    child: Text('Follow'),
+                  ),
+                  onTap: () {
+                    // Navigate to other_user_food screen when a user is tapped
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            other_user_food(userEmail: user['email']),
+                      ),
+                    );
+                  },
+                );
         },
       ),
     );
   }
 }
-

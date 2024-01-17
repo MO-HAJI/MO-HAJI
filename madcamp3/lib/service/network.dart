@@ -167,4 +167,83 @@ class Network {
       return {'error': 'Failed to follow user'};
     }
   }
+
+  Future<dynamic> unfollowUser(String userEmail, String followEmail) async {
+    var url = Uri.parse(baseUrl + '/unfollow');
+    try {
+      final response = await post(
+        url,
+        body: jsonEncode({
+          'email': userEmail,
+          'follow_email': followEmail,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+              "Bearer ${User.current.token}", // Corrected the syntax here
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var userJson = response.body;
+        return jsonDecode(userJson);
+      } else {
+        print('Failed to unfollow user. Status code: ${response.statusCode}');
+        return {'error': 'Failed to unfollow user'};
+      }
+    } catch (e) {
+      print(e);
+      return {'error': 'Failed to unfollow user'};
+    }
+  }
+
+  Future<dynamic> getFollowers(String userEmail) async {
+    var url = Uri.parse(baseUrl + '/followers/' + userEmail);
+    try {
+      final response = await get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+              "Bearer ${User.current.token}", // Corrected the syntax here
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var userJson = response.body;
+        return jsonDecode(userJson);
+      } else {
+        print('Failed to get followers. Status code: ${response.statusCode}');
+        return {'error': 'Failed to get followers'};
+      }
+    } catch (e) {
+      print(e);
+      return {'error': 'Failed to get followers'};
+    }
+  }
+
+  Future<dynamic> getFollowings(String userEmail) async {
+    var url = Uri.parse(baseUrl + '/followings/' + userEmail);
+    try {
+      final response = await get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+              "Bearer ${User.current.token}", // Corrected the syntax here
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var userJson = response.body;
+        return jsonDecode(userJson);
+      } else {
+        print('Failed to get followings. Status code: ${response.statusCode}');
+        return {'error': 'Failed to get followings'};
+      }
+    } catch (e) {
+      print(e);
+      return {'error': 'Failed to get followings'};
+    }
+  }
 }

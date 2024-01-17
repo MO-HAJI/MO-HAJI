@@ -19,6 +19,9 @@ const {
     updateUser,
     login,
     followUser,
+    unfollowUser,
+    getFollowers,
+    getFollowings,
 } = require("./user_controller");
 
 const router = require("express").Router();
@@ -31,5 +34,8 @@ router.get("/:email", checkToken, getUserByUserEmail);
 router.put("/", checkToken, updateUser);
 router.post("/login", login);
 router.post("/follow", followUser);
+router.post("/unfollow", unfollowUser);
+router.get("/followers/:email", checkToken, getFollowers);
+router.get("/followings/:email", checkToken, getFollowings);
 
 module.exports = router;
