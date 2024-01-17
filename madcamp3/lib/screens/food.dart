@@ -77,7 +77,7 @@ class _DashboardState extends State<Dashboard> {
   Future<void> _selectImage() async {
     final image_picker.ImagePicker picker = image_picker.ImagePicker();
     final image_picker.XFile? pickedFile =
-        await picker.pickImage(source: image_picker.ImageSource.gallery);
+    await picker.pickImage(source: image_picker.ImageSource.gallery);
 
     // loading circle
     showDialog(
@@ -88,7 +88,7 @@ class _DashboardState extends State<Dashboard> {
 
     if (pickedFile != null) {
       final String? extractedScript =
-          await visionApi.extractLabels(File(pickedFile.path));
+      await visionApi.extractLabels(File(pickedFile.path));
       final String keyword = await gptApi.getKeyword(extractedScript!);
 
       XFile? _selectedImage = XFile(pickedFile.path);
@@ -124,53 +124,64 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          "내 게시물",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Container(
-        padding: const EdgeInsets.only(top: 50),
         child: Column(
           children: <Widget>[
-            Stack(children: [
-              CarouselSlider(
-                items: [
-                  ...generateImageTiles(),
-                  // Add a custom item for the last page with an "Add Photo" button
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: Colors.grey[200], // You can customize the color
-                    ),
-                    child: Center(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await _selectImage();
-                        },
-                        child: Text('Add Photo'),
+            Stack(
+              children: [
+                CarouselSlider(
+                  items: [
+                    ...generateImageTiles(),
+                    // Add a custom item for the last page with an "Add Photo" button
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        color: Colors.grey[200], // You can customize the color
+                      ),
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await _selectImage();
+                          },
+                          child: Text('Add Photo'),
+                        ),
                       ),
                     ),
+                  ],
+                  options: CarouselOptions(
+                    enlargeCenterPage: true,
+                    aspectRatio: 1.5,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _current = index;
+                      });
+                    },
                   ),
-                ],
-                options: CarouselOptions(
-                  enlargeCenterPage: true,
-                  aspectRatio: 1.5,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _current = index;
-                    });
-                  },
                 ),
-              ),
-              // image delete button
-              if (_current < menu.length)
-                Positioned(
-                  top: 5,
-                  right: 40,
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50.0),
-                      color: Colors.black54, // You can customize the color
-                    ),
-                    child: IconButton(
+                // image delete button
+                if (_current < menu.length)
+                  Positioned(
+                    top: 5,
+                    right: 40,
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50.0),
+                        color: Colors.black54, // You can customize the color
+                      ),
+                      child: IconButton(
                         icon: Icon(
                           Icons.delete,
                           color: Colors.white,
@@ -179,42 +190,45 @@ class _DashboardState extends State<Dashboard> {
                         onPressed: () async {
                           // popup
                           showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("음식 제거"),
-                                  content: Text("이미지를 삭제하시겠습니까?"),
-                                  actions: [
-                                    TextButton(
-                                      child: Text("취소"),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text("삭제"),
-                                      onPressed: () async {
-                                        await apiImage.deleteFoodImage(
-                                            foodInfo[_current].id.toString());
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("음식 제거"),
+                                content: Text("이미지를 삭제하시겠습니까?"),
+                                actions: [
+                                  TextButton(
+                                    child: Text("취소"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text("삭제"),
+                                    onPressed: () async {
+                                      await apiImage.deleteFoodImage(
+                                        foodInfo[_current].id.toString(),
+                                      );
 
-                                        await getDbData();
+                                      await getDbData();
 
-                                        setState(() {
-                                          _current = 0;
-                                        });
+                                      setState(() {
+                                        _current = 0;
+                                      });
 
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              });
-                        }),
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                ),
-            ]),
-            if (_current <
-                menu.length) // Only show the text when not on the "Add Photo" button
+              ],
+            ),
+            if (_current < menu.length) // Only show the text when not on the "Add Photo" button
               Center(
                 child: Text(
                   menu[_current].replaceAll("\"", ""),
@@ -230,34 +244,41 @@ class _DashboardState extends State<Dashboard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Text(
+                    showRecipe ? '메뉴 정보' : '주변 맛집',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 150),
                   // Toggle button for Recipe
                   ToggleButtons(
                     children: [
-                      Icon(Icons
-                          .food_bank), // You can replace this with your own icon
+                      Icon(Icons.food_bank),
+                      // You can replace this with your own icon
                     ],
                     isSelected: [showRecipe],
                     onPressed: (int index) {
                       setState(() {
                         showRecipe = !showRecipe;
-                        showMap =
-                            !showRecipe; // Ensure only one option is selected at a time
+                        showMap = !showRecipe; // Ensure only one option is selected at a time
                       });
                     },
                   ),
-                  SizedBox(width: 16), // Adjust spacing between buttons
+                  // Adjust spacing between buttons
                   // Toggle button for Map
                   ToggleButtons(
                     children: [
-                      Icon(
-                          Icons.map), // You can replace this with your own icon
+                      Icon(Icons.map),
+                      // You can replace this with your own icon
                     ],
                     isSelected: [showMap],
                     onPressed: (int index) {
                       setState(() {
                         showMap = !showMap;
-                        showRecipe =
-                            !showMap; // Ensure only one option is selected at a time
+                        showRecipe = !showMap; // Ensure only one option is selected at a time
                       });
                     },
                   ),
@@ -267,11 +288,14 @@ class _DashboardState extends State<Dashboard> {
               Expanded(
                 child: showRecipe
                     ? FoodInfoWidget(
-                        recipe: recipe[_current],
-                        allergy: allergy[_current],
-                        // GPTmenu: menu[_current].replaceAll("\"", ""),
-                      )
-                    : NaverAPI(GPTmenu: menu[_current].replaceAll("\"", "")),
+                  recipe: recipe[_current],
+                  allergy: allergy[_current],
+                  // GPTmenu: menu[_current].replaceAll("\"", ""),
+                )
+                    :                 Container(
+                  margin: EdgeInsets.only(top: 10), // Adjust the top margin as needed
+                  child: NaverAPI(GPTmenu: menu[_current].replaceAll("\"", "")),
+                ),
               ),
           ],
         ),
