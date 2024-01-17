@@ -22,6 +22,7 @@ const {
     unfollowUser,
     getFollowers,
     getFollowings,
+    checkFollowing,
 } = require("./user_controller");
 
 const router = require("express").Router();
@@ -37,5 +38,6 @@ router.post("/follow", followUser);
 router.post("/unfollow", unfollowUser);
 router.get("/followers/:email", checkToken, getFollowers);
 router.get("/followings/:email", checkToken, getFollowings);
+router.post("/checkfollowing", checkFollowing);
 
 module.exports = router;

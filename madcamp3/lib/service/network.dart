@@ -246,4 +246,34 @@ class Network {
       return {'error': 'Failed to get followings'};
     }
   }
+
+  Future<int> checkIfFollowing(String userEmail, String targetEmail) async {
+    var url = Uri.parse(baseUrl + '/checkfollowing');
+    try {
+      final response = await post(
+        url,
+        body: jsonEncode({
+          'email': userEmail,
+          'target_email': targetEmail,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+              "Bearer ${User.current.token}", // Corrected the syntax here
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var userJson = response.body;
+        return jsonDecode(userJson)['result'];
+      } else {
+        print(
+            'Failed to check if following. Status code: ${response.statusCode}');
+        return -1;
+      }
+    } catch (e) {
+      print(e);
+      return -1;
+    }
+  }
 }

@@ -223,4 +223,34 @@ module.exports = {
             }
         );
     },
+
+    checkFollowing: (req, res) => {
+        const body = req.body;
+        const email = body.email;
+        const target_email = body.target_email;
+        console.log("email:", email);
+        console.log("target_email:", target_email);
+        db.query(
+            "SELECT * FROM friends WHERE user = ? AND follow = ?",
+            [email, target_email],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(result);
+                    if (result.length == 0) {
+                        return res.status(200).send({
+                            result: 0,
+                            message: "not following",
+                        });
+                    } else {
+                        return res.status(200).send({
+                            result: 1,
+                            message: "following",
+                        });
+                    }
+                }
+            }
+        );
+    },
 };

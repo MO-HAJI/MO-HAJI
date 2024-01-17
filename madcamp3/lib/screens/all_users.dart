@@ -32,28 +32,6 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
     }
   }
 
-  // Function to handle the follow action
-  Future<void> followUser(String userEmail) async {
-    try {
-      // You can customize this part based on your UI/UX for the follow action
-      Map<String, dynamic> followResult = await network.followUser(
-        User.current.email,
-        userEmail,
-      );
-
-      if (followResult.containsKey('error')) {
-        // Handle error
-        print('Failed to follow user: ${followResult['error']}');
-      } else {
-        // Follow successful
-        print('Successfully followed user');
-        // Optionally, you can update the UI to reflect the follow action
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,14 +39,12 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
         itemCount: allUsers.length,
         itemBuilder: (context, index) {
           Map<String, dynamic> user = allUsers[index];
-          String profileImage =
-              user['profile_image'] ?? ''; // Default to an empty string if null
+          String profileImage = user['profile_image'] ?? '';
 
-          // Check if the current user is the logged-in user
           bool isCurrentUser = user['email'] == User.current.email;
 
           return isCurrentUser
-              ? SizedBox.shrink() // If it's the current user, hide the item
+              ? SizedBox.shrink()
               : ListTile(
                   title: Text(user['name'] ?? ''),
                   subtitle: Text(user['email'] ?? ''),
@@ -76,15 +52,15 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                     backgroundImage:
                         NetworkImage(apiImage.getImage(profileImage) ?? ''),
                   ),
-                  trailing: ElevatedButton(
-                    onPressed: () {
-                      // Call the followUser function when the Follow button is pressed
-                      followUser(user['email']);
+                  trailing: FollowButton(
+                    userEmail: User.current.email,
+                    targetUserEmail: user['email'],
+                    onFollowComplete: () {
+                      // Reload the user list after following/unfollowing
+                      fetchAllUsers();
                     },
-                    child: Text('Follow'),
                   ),
                   onTap: () {
-                    // Navigate to other_user_food screen when a user is tapped
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -96,6 +72,75 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                 );
         },
       ),
+    );
+  }
+}
+
+class FollowButton extends StatefulWidget {
+  final String userEmail;
+  final String targetUserEmail;
+  final Function onFollowComplete;
+
+  const FollowButton({
+    required this.userEmail,
+    required this.targetUserEmail,
+    required this.onFollowComplete,
+  });
+
+  @override
+  _FollowButtonState createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<FollowButton> {
+  int isFollowing = 0;
+  Network network = Network();
+
+  @override
+  void initState() {
+    super.initState();
+    checkFollowingStatus();
+  }
+
+  Future<void> checkFollowingStatus() async {
+    // Implement the logic to check if the user is already followed
+    // Update the value of 'isFollowing' accordingly
+    // For example:
+    int following = await network.checkIfFollowing(
+      widget.userEmail,
+      widget.targetUserEmail,
+    );
+    setState(() {
+      isFollowing = following;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        if (isFollowing == 1) {
+          // If already following, unfollow
+          await network.unfollowUser(
+            widget.userEmail,
+            widget.targetUserEmail,
+          );
+        } else {
+          // If not following, follow
+          await network.followUser(
+            widget.userEmail,
+            widget.targetUserEmail,
+          );
+        }
+
+        // Toggle the value of 'isFollowing'
+        setState(() {
+          isFollowing = isFollowing == 1 ? 0 : 1;
+        });
+
+        // Call the callback function after following/unfollowing is complete
+        widget.onFollowComplete();
+      },
+      child: Text(isFollowing == 1 ? 'Unfollow' : 'Follow'),
     );
   }
 }
