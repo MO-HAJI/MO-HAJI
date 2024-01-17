@@ -139,18 +139,19 @@ class Network {
     }
   }
 
-  Future<Map<String, dynamic>> followUser(String userEmail, String followEmail) async {
+  Future<dynamic> followUser(String userEmail, String followEmail) async {
     var url = Uri.parse(baseUrl + '/follow');
     try {
       final response = await post(
         url,
         body: jsonEncode({
-          'user': userEmail,
-          'follow': followEmail,
+          'email': userEmail,
+          'follow_email': followEmail,
         }),
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer ${User.current.token}", // Corrected the syntax here
+          "Authorization":
+              "Bearer ${User.current.token}", // Corrected the syntax here
         },
       );
 

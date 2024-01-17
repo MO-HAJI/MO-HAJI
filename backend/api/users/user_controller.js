@@ -131,4 +131,27 @@ module.exports = {
             }
         });
     },
+
+    followUser: (req, res) => {
+        const body = req.body;
+        const email = body.email;
+        const follow_email = body.follow_email;
+        console.log("email:", email);
+        console.log("follow_email:", follow_email);
+        db.query(
+            "INSERT INTO friends (user, follow) VALUES(?,?)",
+            [email, follow_email],
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(result);
+                    return res.status(200).send({
+                        result: 1,
+                        message: "follow user successfully",
+                    });
+                }
+            }
+        );
+    }
 };
