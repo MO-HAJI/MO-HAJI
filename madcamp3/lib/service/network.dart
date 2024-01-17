@@ -197,28 +197,35 @@ class Network {
     }
   }
 
-  Future<dynamic> getFollowers(String userEmail) async {
+  Future<List<Map<String, dynamic>>> getFollowers(String userEmail) async {
     var url = Uri.parse(baseUrl + '/followers/' + userEmail);
     try {
       final response = await get(
         url,
         headers: {
           "Content-Type": "application/json",
-          "Authorization":
-              "Bearer ${User.current.token}", // Corrected the syntax here
+          "Authorization": "Bearer ${User.current.token}"
         },
       );
 
       if (response.statusCode == 200) {
         var userJson = response.body;
-        return jsonDecode(userJson);
+        var parsingData = jsonDecode(userJson);
+        // Make sure 'data' is a List<Map<String, dynamic>>
+        if (parsingData['data'] is List) {
+          return List<Map<String, dynamic>>.from(parsingData['data']);
+        } else {
+          // Handle the case when 'data' is not a List
+          print('Unexpected response format: ${parsingData['data']}');
+          return [];
+        }
       } else {
-        print('Failed to get followers. Status code: ${response.statusCode}');
-        return {'error': 'Failed to get followers'};
+        print('Failed to fetch users. Status code: ${response.statusCode}');
+        return [];
       }
     } catch (e) {
       print(e);
-      return {'error': 'Failed to get followers'};
+      return [];
     }
   }
 
@@ -229,21 +236,28 @@ class Network {
         url,
         headers: {
           "Content-Type": "application/json",
-          "Authorization":
-              "Bearer ${User.current.token}", // Corrected the syntax here
+          "Authorization": "Bearer ${User.current.token}"
         },
       );
 
       if (response.statusCode == 200) {
         var userJson = response.body;
-        return jsonDecode(userJson);
+        var parsingData = jsonDecode(userJson);
+        // Make sure 'data' is a List<Map<String, dynamic>>
+        if (parsingData['data'] is List) {
+          return List<Map<String, dynamic>>.from(parsingData['data']);
+        } else {
+          // Handle the case when 'data' is not a List
+          print('Unexpected response format: ${parsingData['data']}');
+          return [];
+        }
       } else {
-        print('Failed to get followings. Status code: ${response.statusCode}');
-        return {'error': 'Failed to get followings'};
+        print('Failed to fetch users. Status code: ${response.statusCode}');
+        return [];
       }
     } catch (e) {
       print(e);
-      return {'error': 'Failed to get followings'};
+      return [];
     }
   }
 

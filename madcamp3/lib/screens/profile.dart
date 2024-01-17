@@ -70,20 +70,8 @@ class _ProfilePageState extends State<ProfilePage> {
     var following = await network.getFollowings(userEmail);
 
     setState(() {
-      // Check if "data" key exists and is not null
-      if (follower.containsKey('data') && follower['data'] != null) {
-        followerCount = (follower['data'] as List).length;
-      } else {
-        // Handle the case when "data" key is not present or is null
-        followerCount = 0; // or any default value you prefer
-      }
-
-      if (following.containsKey('data') && following['data'] != null) {
-        followingCount = (following['data'] as List).length;
-      } else {
-        // Handle the case when "data" key is not present or is null
-        followingCount = 0; // or any default value you prefer
-      }
+      followerCount = follower.length;
+      followingCount = following.length;
     });
   }
 
